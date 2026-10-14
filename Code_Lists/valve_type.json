@@ -1,0 +1,159 @@
+{
+ "code_list": "valve_type",
+ "version": "1.3.2",
+ "description": "WI valve type. isolates: the valve is an isolation valve - closed for a mains repair and in isolation analysis (rule R4).",
+ "attributes": {
+  "isolates": "isolation valve: closed for a mains repair and in isolation analysis; stops an isolation trace. Rule (James 14/10/2026, reverts 13/10 'a valve is a valve'): only isolation valves (sluice / gate, butterfly line valve, boundary, district, motorised) isolate. PRV / PSV / flow control / pressure breaking / float are control valves that pass water backwards; a non-return valve is no reverse isolation; washout, air and stop tap are off the main; 'other' (a recorded non-standard type) is not an isolation valve; a BLANK type isolates (see blank_isolates). Matches what the Synergi isolation scripts close (VL valves only) and the legacy readers' gate valves."
+ },
+ "blank_isolates": true,
+ "blank_isolates_reason": "James 14/10/2026: a blank (unrecorded) valve type isolates - an unrecorded type is far more likely an ordinary isolation valve than a PRV / control valve. 'other' (a recorded non-standard type) does not isolate.",
+ "codes": [
+  {
+   "code": "sluice",
+   "label": "Sluice / gate valve",
+   "synonyms": [
+    "sluice",
+    "sluice valve",
+    "gate valve",
+    "gate"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "butterfly",
+   "label": "Butterfly valve",
+   "synonyms": [
+    "butterfly",
+    "butterfly valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "boundary",
+   "label": "Boundary valve (normally closed)",
+   "synonyms": [
+    "boundary",
+    "boundary valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "washout",
+   "label": "Washout valve",
+   "synonyms": [
+    "washout",
+    "washout valve",
+    "scour"
+   ],
+   "isolates": false
+  },
+  {
+   "code": "district",
+   "label": "District meter valve",
+   "synonyms": [
+    "district",
+    "district valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "motorised",
+   "label": "Motorised / actuated valve",
+   "synonyms": [
+    "motorised",
+    "actuated",
+    "motorised valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "prv",
+   "label": "Pressure reducing valve",
+   "synonyms": [
+    "prv",
+    "pressure reducing valve"
+   ],
+   "isolates": false
+  },
+  {
+   "code": "psv",
+   "label": "Pressure sustaining valve",
+   "synonyms": [
+    "psv",
+    "pressure sustaining valve"
+   ],
+   "isolates": false
+  },
+  {
+   "code": "frv",
+   "label": "Flow regulating / control valve",
+   "synonyms": [
+    "frv",
+    "flow control valve",
+    "flow regulating valve"
+   ],
+   "isolates": false
+  },
+  {
+   "code": "pbv",
+   "label": "Pressure breaking valve",
+   "synonyms": [
+    "pbv",
+    "pressure breaking valve",
+    "break pressure valve"
+   ],
+   "isolates": false
+  },
+  {
+   "code": "nrv",
+   "label": "Non-return valve",
+   "synonyms": [
+    "nrv",
+    "non return valve",
+    "non-return valve",
+    "check valve"
+   ],
+   "isolates": false
+  },
+  {
+   "code": "air",
+   "label": "Air valve",
+   "synonyms": [
+    "air valve",
+    "air release valve"
+   ],
+   "isolates": false
+  },
+  {
+   "code": "float",
+   "label": "Float / altitude valve",
+   "synonyms": [
+    "float valve",
+    "altitude valve",
+    "float"
+   ],
+   "isolates": false
+  },
+  {
+   "code": "stop_tap",
+   "label": "Stop tap / customer stop valve",
+   "synonyms": [
+    "stop tap",
+    "stoptap",
+    "stop cock",
+    "customer stop valve",
+    "boundary stop tap"
+   ],
+   "isolates": false,
+   "isolates_note": "customer-side valve: never cuts a mains isolation trace"
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ],
+   "isolates": false
+  }
+ ]
+}

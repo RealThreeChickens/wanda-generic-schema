@@ -1,0 +1,61 @@
+{
+ "code_list": "hydrant_class",
+ "version": "1.1.0",
+ "description": "WI hydrant bore / jumper class (UK practice). supply_tier: first / second choice for tankering, injection or overland supply (rule R9); 0 = not used.",
+ "attributes": {
+  "supply_tier": "1 first choice, 2 second choice, 0 not used",
+  "supply_tier_status": "'James to confirm' where the tier is set by meaning only"
+ },
+ "codes": [
+  {
+   "code": "FB",
+   "label": "Full bore",
+   "synonyms": [
+    "fb",
+    "full bore",
+    "full-bore"
+   ],
+   "supply_tier": 1
+  },
+  {
+   "code": "FJ",
+   "label": "Fixed jumper",
+   "synonyms": [
+    "fj",
+    "fixed jumper"
+   ],
+   "supply_tier": 1
+  },
+  {
+   "code": "LJ",
+   "label": "Loose jumper",
+   "synonyms": [
+    "lj",
+    "loose jumper"
+   ],
+   "supply_tier": 2
+  },
+  {
+   "code": "TB",
+   "label": "Throughbore (unrestricted bore when open)",
+   "synonyms": [
+    "tb",
+    "throughbore",
+    "through bore",
+    "through-bore"
+   ],
+   "supply_tier": 1,
+   "supply_tier_status": "James to confirm (an unrestricted waterway like full bore)"
+  },
+  {
+   "code": "unclassified",
+   "label": "Class not recorded",
+   "synonyms": [
+    "unclassified",
+    "unknown",
+    "not known"
+   ],
+   "supply_tier": 0
+  }
+ ]
+}

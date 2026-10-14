@@ -1,0 +1,369 @@
+{
+  "code_list": "material",
+  "version": "1.2.1",
+  "description": "WI pipe material (UK short codes used by the WANDa apps and in public UK water / sewer material code usage) with discolouration risk band (1 low, 2 medium, 3 high). Holds every code of the apps' band list so bands survive the converter. Rule (James 13/10): every delivered material -> one WI code; bands are WRc's, keyed by WI code; a code whose band is not set takes the default band 3; a short code whose meaning is not found in public UK usage stays a code of its own with the default band (never guessed into another material).",
+  "attributes": {
+    "band": "discolouration risk band (1 low, 2 medium, 3 high); unknown = 3 (conservative)",
+    "band_status": "'James to set' = band not yet decided; 'default' = default band 3 because the material is not in the WRc band list (or its meaning is not confirmed)"
+  },
+  "codes": [
+    {
+      "code": "CI",
+      "label": "Cast iron",
+      "synonyms": [
+        "cast iron"
+      ],
+      "band": 3
+    },
+    {
+      "code": "GCI",
+      "label": "Grey cast iron",
+      "synonyms": [
+        "grey iron",
+        "grey cast iron"
+      ],
+      "band": 3
+    },
+    {
+      "code": "SCI",
+      "label": "Spun cast iron",
+      "synonyms": [
+        "spun iron",
+        "spun cast iron"
+      ],
+      "band": 3,
+      "band_status": "James to set (spun iron: the one WI code for any delivered spun iron; band / WQ risk differ between sources)"
+    },
+    {
+      "code": "DI",
+      "label": "Ductile iron",
+      "synonyms": [
+        "ductile iron"
+      ],
+      "band": 2
+    },
+    {
+      "code": "AC",
+      "label": "Asbestos cement",
+      "synonyms": [
+        "asbestos cement",
+        "asbestos concrete"
+      ],
+      "band": 2
+    },
+    {
+      "code": "PE",
+      "label": "Polyethylene",
+      "synonyms": [
+        "polyethylene",
+        "poly"
+      ],
+      "band": 1
+    },
+    {
+      "code": "MDPE",
+      "label": "Medium density polyethylene",
+      "synonyms": [
+        "medium density polyethylene",
+        "mdpe barrier pipe"
+      ],
+      "band": 1
+    },
+    {
+      "code": "HDPE",
+      "label": "High density polyethylene",
+      "synonyms": [
+        "high density polyethylene"
+      ],
+      "band": 1
+    },
+    {
+      "code": "HPPE",
+      "label": "High performance polyethylene",
+      "synonyms": [
+        "high performance polyethylene",
+        "high pressure polyethylene"
+      ],
+      "band": 1
+    },
+    {
+      "code": "LDPE",
+      "label": "Low density polyethylene",
+      "synonyms": [
+        "low density polyethylene"
+      ],
+      "band": 1
+    },
+    {
+      "code": "PVC",
+      "label": "Polyvinyl chloride",
+      "synonyms": [
+        "pvc",
+        "upvc",
+        "polyvinyl chloride",
+        "unplasticised pvc"
+      ],
+      "band": 1
+    },
+    {
+      "code": "MOPVC",
+      "label": "Molecularly oriented PVC",
+      "synonyms": [
+        "pvc-o",
+        "mopvc",
+        "pvcmo"
+      ],
+      "band": 1
+    },
+    {
+      "code": "ST",
+      "label": "Steel",
+      "synonyms": [
+        "steel"
+      ],
+      "band": 2
+    },
+    {
+      "code": "SST",
+      "label": "Stainless steel",
+      "synonyms": [
+        "stainless steel"
+      ],
+      "band": 1
+    },
+    {
+      "code": "GAL",
+      "label": "Galvanised iron",
+      "synonyms": [
+        "galvanised iron",
+        "galvanized iron",
+        "galvanised steel"
+      ],
+      "band": 3
+    },
+    {
+      "code": "CO",
+      "label": "Concrete",
+      "synonyms": [
+        "concrete"
+      ],
+      "band": 3
+    },
+    {
+      "code": "GRP",
+      "label": "Glass reinforced plastic",
+      "synonyms": [
+        "glass reinforced plastic"
+      ],
+      "band": 1
+    },
+    {
+      "code": "CU",
+      "label": "Copper",
+      "synonyms": [
+        "copper"
+      ],
+      "band": 1
+    },
+    {
+      "code": "LEAD",
+      "label": "Lead",
+      "synonyms": [
+        "lead",
+        "pb"
+      ],
+      "band": 3
+    },
+    {
+      "code": "AK",
+      "label": "Black alkathene",
+      "synonyms": [
+        "black alkathene",
+        "alkathene"
+      ],
+      "band": 1
+    },
+    {
+      "code": "PP",
+      "label": "Polypropylene",
+      "synonyms": [
+        "polypropylene"
+      ],
+      "band": 1
+    },
+    {
+      "code": "BR",
+      "label": "Brick",
+      "synonyms": [
+        "brick",
+        "common brick",
+        "brickwork"
+      ],
+      "band": 3,
+      "band_status": "default (meaning corrected in 1.2.0: brick, not brass; band 2 belonged to the brass reading - James to set)"
+    },
+    {
+      "code": "VC",
+      "label": "Vitrified clay",
+      "synonyms": [
+        "vitrified clay",
+        "clayware"
+      ],
+      "band": 2
+    },
+    {
+      "code": "PUR",
+      "label": "Polyurethane",
+      "synonyms": [
+        "polyurethane"
+      ],
+      "band": 1
+    },
+    {
+      "code": "PC",
+      "label": "Prestressed concrete",
+      "synonyms": [
+        "prestressed concrete",
+        "pre-stressed concrete"
+      ],
+      "band": 3,
+      "band_status": "James to set (meaning corrected in 1.2.0: prestressed concrete; band 3 = concrete family, was 1 under the plastic reading)"
+    },
+    {
+      "code": "RPM",
+      "label": "Reinforced plastic matrix",
+      "synonyms": [
+        "reinforced plastic matrix"
+      ],
+      "band": 1
+    },
+    {
+      "code": "PSC",
+      "label": "Plastic / steel composite",
+      "synonyms": [
+        "plastic steel composite",
+        "plastic/steel composite"
+      ],
+      "band": 3,
+      "band_status": "default"
+    },
+    {
+      "code": "FRC",
+      "label": "Fibre reinforced concrete",
+      "synonyms": [
+        "fibre reinforced concrete",
+        "fibre reinforced cement"
+      ],
+      "band": 2,
+      "band_status": "James to set"
+    },
+    {
+      "code": "CSU",
+      "label": "Concrete segments (unbolted)",
+      "synonyms": [
+        "concrete segments unbolted",
+        "concrete segments (unbolted)"
+      ],
+      "band": 3,
+      "band_status": "default"
+    },
+    {
+      "code": "GF",
+      "label": "Glass fibre",
+      "synonyms": [
+        "glass fibre"
+      ],
+      "band": 3,
+      "band_status": "James to set"
+    },
+    {
+      "code": "MAC",
+      "label": "Masonry (regular courses)",
+      "synonyms": [
+        "masonry in regular courses",
+        "masonry regular courses"
+      ],
+      "band": 3,
+      "band_status": "default"
+    },
+    {
+      "code": "MAR",
+      "label": "Masonry (random courses)",
+      "synonyms": [
+        "masonry randomly coursed",
+        "masonry random courses"
+      ],
+      "band": 3,
+      "band_status": "default"
+    },
+    {
+      "code": "CSB",
+      "label": "Concrete segments (bolted)",
+      "synonyms": [
+        "concrete segments bolted",
+        "concrete segments (bolted)"
+      ],
+      "band": 3,
+      "band_status": "default"
+    },
+    {
+      "code": "GRC",
+      "label": "Glass reinforced concrete",
+      "synonyms": [
+        "glass reinforced concrete"
+      ],
+      "band": 3,
+      "band_status": "default"
+    },
+    {
+      "code": "PF",
+      "label": "Pitch fibre",
+      "synonyms": [
+        "pitch fibre",
+        "pitch fiber"
+      ],
+      "band": 3,
+      "band_status": "default"
+    },
+    {
+      "code": "BP",
+      "label": "BP (probably barrier pipe; meaning not confirmed)",
+      "synonyms": [],
+      "band": 3,
+      "band_status": "default (meaning not confirmed)"
+    },
+    {
+      "code": "BAC",
+      "label": "BAC (meaning not found in public UK usage)",
+      "synonyms": [],
+      "band": 3,
+      "band_status": "default (meaning not confirmed)"
+    },
+    {
+      "code": "CPS",
+      "label": "CPS (meaning not found in public UK usage)",
+      "synonyms": [],
+      "band": 3,
+      "band_status": "default (meaning not confirmed)"
+    },
+    {
+      "code": "OT",
+      "label": "Other",
+      "synonyms": [
+        "other",
+        "others"
+      ],
+      "band": 3
+    },
+    {
+      "code": "UNK",
+      "label": "Unknown",
+      "synonyms": [
+        "unknown",
+        "not known",
+        "n/k"
+      ],
+      "band": 3
+    }
+  ]
+}

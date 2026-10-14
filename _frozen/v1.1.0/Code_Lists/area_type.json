@@ -1,0 +1,31 @@
+{
+ "code_list": "area_type",
+ "version": "1.1.0",
+ "description": "WI kind of a dma_areas polygon. is_dma: becomes a DMA in the apps (rule R7). Other area levels (dma_subs, wq_zones, control_groups, sub_regions, regions, model_areas) have their own layers.",
+ "attributes": {
+  "is_dma": "a DMA the apps use"
+ },
+ "codes": [
+  {
+   "code": "dma",
+   "label": "District metered area",
+   "synonyms": [
+    "dma",
+    "district metered area",
+    "district meter area"
+   ],
+   "is_dma": true
+  },
+  {
+   "code": "other",
+   "label": "Other district (not a DMA)",
+   "synonyms": [
+    "other",
+    "non dma",
+    "pressure zone",
+    "planning area"
+   ],
+   "is_dma": false
+  }
+ ]
+}

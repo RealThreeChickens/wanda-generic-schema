@@ -1,0 +1,66 @@
+{
+ "code_list": "site_type",
+ "version": "1.0.0",
+ "description": "WI network site type.",
+ "codes": [
+  {
+   "code": "service_reservoir",
+   "label": "Service reservoir",
+   "synonyms": [
+    "service reservoir",
+    "sr",
+    "reservoir"
+   ]
+  },
+  {
+   "code": "water_tower",
+   "label": "Water tower",
+   "synonyms": [
+    "water tower",
+    "tower"
+   ]
+  },
+  {
+   "code": "raw_reservoir",
+   "label": "Raw water reservoir",
+   "synonyms": [
+    "raw water reservoir",
+    "raw reservoir",
+    "impounding reservoir"
+   ]
+  },
+  {
+   "code": "treatment_works",
+   "label": "Water treatment works",
+   "synonyms": [
+    "treatment works",
+    "wtw",
+    "water treatment works"
+   ]
+  },
+  {
+   "code": "borehole",
+   "label": "Borehole / well",
+   "synonyms": [
+    "borehole",
+    "well"
+   ]
+  },
+  {
+   "code": "pumping_station",
+   "label": "Pumping / booster station",
+   "synonyms": [
+    "pumping station",
+    "booster station",
+    "pump station"
+   ]
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ]
+  }
+ ]
+}

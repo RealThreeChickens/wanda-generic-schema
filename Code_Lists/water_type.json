@@ -1,0 +1,36 @@
+{
+ "code_list": "water_type",
+ "version": "1.0.0",
+ "description": "WI water type.",
+ "codes": [
+  {
+   "code": "potable",
+   "label": "Potable",
+   "synonyms": [
+    "potable",
+    "treated"
+   ]
+  },
+  {
+   "code": "raw",
+   "label": "Raw",
+   "synonyms": [
+    "raw"
+   ]
+  },
+  {
+   "code": "non_potable",
+   "label": "Non-potable",
+   "synonyms": [
+    "non potable"
+   ]
+  },
+  {
+   "code": "unknown",
+   "label": "Unknown",
+   "synonyms": [
+    "unknown"
+   ]
+  }
+ ]
+}

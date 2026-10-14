@@ -1,0 +1,107 @@
+{
+ "code_list": "pipe_function",
+ "version": "1.2.0",
+ "description": "WI pipe function. serves_customers: properties may be linked to it (rule R2). potable_network: part of the potable network the apps analyse (rule R3). confirm: an uncertain class - rows are flagged for confirmation (rule R11).",
+ "attributes": {
+  "serves_customers": "properties may be linked to this pipe",
+  "potable_network": "part of the potable network the apps analyse",
+  "confirm": "uncertain class: the row's confirm lists pipe_function"
+ },
+ "codes": [
+  {
+   "code": "distribution",
+   "label": "Distribution main",
+   "synonyms": [
+    "distribution",
+    "distribution main"
+   ],
+   "serves_customers": true,
+   "potable_network": true
+  },
+  {
+   "code": "trunk",
+   "label": "Trunk / transmission main",
+   "synonyms": [
+    "trunk",
+    "trunk main",
+    "transmission",
+    "transmission main"
+   ],
+   "serves_customers": false,
+   "potable_network": true
+  },
+  {
+   "code": "raw",
+   "label": "Raw water main",
+   "synonyms": [
+    "raw",
+    "raw water",
+    "raw water main"
+   ],
+   "serves_customers": false,
+   "potable_network": false
+  },
+  {
+   "code": "communication",
+   "label": "Communication / service pipe",
+   "synonyms": [
+    "comm pipe",
+    "communication",
+    "communication pipe",
+    "company service pipe",
+    "lateral",
+    "service",
+    "service pipe"
+   ],
+   "serves_customers": false,
+   "potable_network": true,
+   "potable_network_note": "unchanged from v1.1 - James to decide one PLDR pipe set for every client: one delivery carries communication pipes in its mains layer, others now import their service-pipe layers (v1.2)"
+  },
+  {
+   "code": "non_potable",
+   "label": "Non-potable",
+   "synonyms": [
+    "non potable",
+    "non-potable"
+   ],
+   "serves_customers": false,
+   "potable_network": false
+  },
+  {
+   "code": "supply",
+   "label": "Supply pipe (customer side)",
+   "synonyms": [
+    "supply pipe",
+    "private pipe",
+    "customer supply pipe"
+   ],
+   "serves_customers": false,
+   "potable_network": false
+  },
+  {
+   "code": "other",
+   "label": "Other pipe (washout / emptying / overflow / fire main ...)",
+   "synonyms": [
+    "other",
+    "emptying pipe",
+    "washout pipe",
+    "overflow",
+    "fire main",
+    "fire supply"
+   ],
+   "serves_customers": false,
+   "potable_network": false
+  },
+  {
+   "code": "unknown",
+   "label": "Unknown",
+   "synonyms": [
+    "unknown"
+   ],
+   "serves_customers": false,
+   "potable_network": true,
+   "confirm": true,
+   "serves_customers_note": "James 13/10: 'probably not, but confirm' - false + confirm"
+  }
+ ]
+}

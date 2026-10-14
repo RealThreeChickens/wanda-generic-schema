@@ -1,0 +1,47 @@
+{
+ "code_list": "outlet_arrangement",
+ "version": "1.1.0",
+ "description": "WI hydrant outlet arrangement.",
+ "codes": [
+  {
+   "code": "single",
+   "label": "Single outlet",
+   "synonyms": [
+    "single",
+    "single outlet"
+   ]
+  },
+  {
+   "code": "double",
+   "label": "Double outlet",
+   "synonyms": [
+    "double",
+    "double outlet",
+    "twin outlet"
+   ]
+  },
+  {
+   "code": "ball",
+   "label": "Ball hydrant (ball-valve outlet)",
+   "synonyms": [
+    "ball",
+    "ball hydrant"
+   ]
+  },
+  {
+   "code": "valved",
+   "label": "Valved outlet",
+   "synonyms": [
+    "valved",
+    "valved outlet"
+   ]
+  },
+  {
+   "code": "unknown",
+   "label": "Unknown",
+   "synonyms": [
+    "unknown"
+   ]
+  }
+ ]
+}

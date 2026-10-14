@@ -1,0 +1,35 @@
+{
+ "code_list": "customer_type",
+ "version": "1.0.0",
+ "description": "WI customer type of a property.",
+ "codes": [
+  {
+   "code": "household",
+   "label": "Household",
+   "synonyms": [
+    "household",
+    "domestic",
+    "residential",
+    "hh"
+   ]
+  },
+  {
+   "code": "non_household",
+   "label": "Non-household",
+   "synonyms": [
+    "non household",
+    "non-household",
+    "business",
+    "commercial",
+    "nhh"
+   ]
+  },
+  {
+   "code": "unknown",
+   "label": "Unknown",
+   "synonyms": [
+    "unknown"
+   ]
+  }
+ ]
+}

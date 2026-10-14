@@ -1,0 +1,75 @@
+{
+ "code_list": "lining",
+ "version": "1.0.0",
+ "description": "WI pipe lining (UK codes).",
+ "codes": [
+  {
+   "code": "EPX",
+   "label": "Epoxy resin",
+   "synonyms": [
+    "epx",
+    "epoxy",
+    "epoxy resin"
+   ]
+  },
+  {
+   "code": "CML",
+   "label": "Cement mortar",
+   "synonyms": [
+    "cml",
+    "cement mortar",
+    "cement mortar lining"
+   ]
+  },
+  {
+   "code": "PU",
+   "label": "Polyurethane",
+   "synonyms": [
+    "pu",
+    "polyurethane"
+   ]
+  },
+  {
+   "code": "SLP",
+   "label": "Sliplined (polyethylene)",
+   "synonyms": [
+    "sliplined",
+    "slip lined",
+    "slipline",
+    "close fit pe"
+   ]
+  },
+  {
+   "code": "BIT",
+   "label": "Bitumen",
+   "synonyms": [
+    "bitumen",
+    "bituminous"
+   ]
+  },
+  {
+   "code": "NONE",
+   "label": "Unlined",
+   "synonyms": [
+    "none",
+    "unlined",
+    "no lining"
+   ]
+  },
+  {
+   "code": "OT",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ]
+  },
+  {
+   "code": "UNK",
+   "label": "Unknown",
+   "synonyms": [
+    "unknown",
+    "not known"
+   ]
+  }
+ ]
+}

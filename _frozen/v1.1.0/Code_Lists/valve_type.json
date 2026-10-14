@@ -1,0 +1,144 @@
+{
+ "code_list": "valve_type",
+ "version": "1.2.0",
+ "description": "WI valve type. isolates: the valve stops an isolation trace when closed (rule R4).",
+ "attributes": {
+  "isolates": "stops an isolation trace when closed. Rule (James 13/10): a valve is a valve - every valve isolates (washout included) and the topology decides what it cuts off; only non-return and air valves do not"
+ },
+ "codes": [
+  {
+   "code": "sluice",
+   "label": "Sluice / gate valve",
+   "synonyms": [
+    "sluice",
+    "sluice valve",
+    "gate valve",
+    "gate"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "butterfly",
+   "label": "Butterfly valve",
+   "synonyms": [
+    "butterfly",
+    "butterfly valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "boundary",
+   "label": "Boundary valve (normally closed)",
+   "synonyms": [
+    "boundary",
+    "boundary valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "washout",
+   "label": "Washout valve",
+   "synonyms": [
+    "washout",
+    "washout valve",
+    "scour"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "district",
+   "label": "District meter valve",
+   "synonyms": [
+    "district",
+    "district valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "motorised",
+   "label": "Motorised / actuated valve",
+   "synonyms": [
+    "motorised",
+    "actuated",
+    "motorised valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "prv",
+   "label": "Pressure reducing valve",
+   "synonyms": [
+    "prv",
+    "pressure reducing valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "psv",
+   "label": "Pressure sustaining valve",
+   "synonyms": [
+    "psv",
+    "pressure sustaining valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "frv",
+   "label": "Flow regulating / control valve",
+   "synonyms": [
+    "frv",
+    "flow control valve",
+    "flow regulating valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "pbv",
+   "label": "Pressure breaking valve",
+   "synonyms": [
+    "pbv",
+    "pressure breaking valve",
+    "break pressure valve"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "nrv",
+   "label": "Non-return valve",
+   "synonyms": [
+    "nrv",
+    "non return valve",
+    "non-return valve",
+    "check valve"
+   ],
+   "isolates": false
+  },
+  {
+   "code": "air",
+   "label": "Air valve",
+   "synonyms": [
+    "air valve",
+    "air release valve"
+   ],
+   "isolates": false
+  },
+  {
+   "code": "float",
+   "label": "Float / altitude valve",
+   "synonyms": [
+    "float valve",
+    "altitude valve",
+    "float"
+   ],
+   "isolates": true
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ],
+   "isolates": true
+  }
+ ]
+}

@@ -1,0 +1,102 @@
+{
+ "code_list": "units",
+ "version": "1.0.0",
+ "description": "WI units. Each unit has its group and the factor to the WI unit of that group (value x factor = WI unit). The converter converts coordinate units only; diameter units are carried as a units code (values as delivered).",
+ "attributes": {
+  "group": "length (coordinates / lengths; WI unit m) or diameter (WI unit mm)",
+  "factor": "multiply a delivered value by this to get the WI unit"
+ },
+ "codes": [
+  {
+   "code": "m",
+   "label": "metre",
+   "synonyms": [
+    "m",
+    "metre",
+    "metres",
+    "meter",
+    "meters"
+   ],
+   "group": "length",
+   "factor": 1.0
+  },
+  {
+   "code": "dm",
+   "label": "decimetre (tenths of a metre)",
+   "synonyms": [
+    "dm",
+    "decimetre",
+    "decimetres",
+    "tenths of a metre"
+   ],
+   "group": "length",
+   "factor": 0.1
+  },
+  {
+   "code": "cm",
+   "label": "centimetre",
+   "synonyms": [
+    "cm",
+    "centimetre",
+    "centimetres"
+   ],
+   "group": "length",
+   "factor": 0.01
+  },
+  {
+   "code": "km",
+   "label": "kilometre",
+   "synonyms": [
+    "km",
+    "kilometre",
+    "kilometres"
+   ],
+   "group": "length",
+   "factor": 1000.0
+  },
+  {
+   "code": "ft",
+   "label": "foot",
+   "synonyms": [
+    "ft",
+    "foot",
+    "feet"
+   ],
+   "group": "length",
+   "factor": 0.3048
+  },
+  {
+   "code": "mm",
+   "label": "millimetre (diameters)",
+   "synonyms": [
+    "mm",
+    "millimetre",
+    "millimetres",
+    "metric"
+   ],
+   "group": "diameter",
+   "factor": 1.0
+  },
+  {
+   "code": "in",
+   "label": "inch (diameters)",
+   "synonyms": [
+    "in",
+    "inch",
+    "inches",
+    "imperial"
+   ],
+   "group": "diameter",
+   "factor": 25.4
+  },
+  {
+   "code": "unknown",
+   "label": "unknown unit",
+   "synonyms": [
+    "unknown"
+   ],
+   "group": "any",
+   "factor": null
+  }
+ ]
+}

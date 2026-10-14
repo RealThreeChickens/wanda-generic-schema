@@ -1,0 +1,51 @@
+{
+ "code_list": "normal_position",
+ "version": "1.1.0",
+ "description": "WI normal valve position. shut: a boundary in the network as delivered (rule R5).",
+ "codes": [
+  {
+   "code": "open",
+   "label": "Normally open",
+   "synonyms": [
+    "open",
+    "normally open",
+    "o"
+   ],
+   "shut": false
+  },
+  {
+   "code": "closed",
+   "label": "Normally closed",
+   "synonyms": [
+    "closed",
+    "shut",
+    "normally closed",
+    "c"
+   ],
+   "shut": true
+  },
+  {
+   "code": "throttled",
+   "label": "Throttled / part open",
+   "synonyms": [
+    "throttled",
+    "part open",
+    "partially open",
+    "t"
+   ],
+   "shut": false
+  },
+  {
+   "code": "unknown",
+   "label": "Unknown",
+   "synonyms": [
+    "unknown",
+    "u"
+   ],
+   "shut": false
+  }
+ ],
+ "attributes": {
+  "shut": "closed in the network as delivered"
+ }
+}

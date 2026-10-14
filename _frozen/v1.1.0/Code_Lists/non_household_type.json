@@ -1,0 +1,82 @@
+{
+ "code_list": "non_household_type",
+ "version": "1.0.0",
+ "description": "WI kind of non-household premises (generic UK categories).",
+ "codes": [
+  {
+   "code": "commercial",
+   "label": "Commercial",
+   "synonyms": [
+    "commercial",
+    "shop",
+    "office",
+    "retail"
+   ]
+  },
+  {
+   "code": "industrial",
+   "label": "Industrial",
+   "synonyms": [
+    "industrial",
+    "factory",
+    "works"
+   ]
+  },
+  {
+   "code": "public_sector",
+   "label": "Public sector",
+   "synonyms": [
+    "public sector",
+    "council",
+    "government"
+   ]
+  },
+  {
+   "code": "agricultural",
+   "label": "Agricultural",
+   "synonyms": [
+    "agricultural",
+    "farm"
+   ]
+  },
+  {
+   "code": "hotel",
+   "label": "Hotel / hospitality",
+   "synonyms": [
+    "hotel",
+    "hospitality"
+   ]
+  },
+  {
+   "code": "school",
+   "label": "School / college",
+   "synonyms": [
+    "school",
+    "college",
+    "education"
+   ]
+  },
+  {
+   "code": "care_home",
+   "label": "Care home",
+   "synonyms": [
+    "care home",
+    "nursing home"
+   ]
+  },
+  {
+   "code": "hospital",
+   "label": "Hospital",
+   "synonyms": [
+    "hospital"
+   ]
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ]
+  }
+ ]
+}

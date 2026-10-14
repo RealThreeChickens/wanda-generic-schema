@@ -1,0 +1,140 @@
+{
+ "code_list": "event_type",
+ "version": "1.0.0",
+ "description": "WI network event type. Disruptive types can stir up deposits (burst-driven contact filter).",
+ "attributes": {
+  "disruptive": "can stir up deposits"
+ },
+ "codes": [
+  {
+   "code": "burst",
+   "label": "Burst / mains failure",
+   "synonyms": [
+    "burst",
+    "burst main",
+    "mains burst",
+    "fracture",
+    "circumferential break",
+    "longitudinal split",
+    "split",
+    "break"
+   ],
+   "disruptive": true
+  },
+  {
+   "code": "mains_repair",
+   "label": "Mains repair (leak on a main)",
+   "synonyms": [
+    "mains repair",
+    "main repair",
+    "leak on main",
+    "mains leak",
+    "leak",
+    "repair"
+   ],
+   "disruptive": true
+  },
+  {
+   "code": "service_repair",
+   "label": "Service pipe repair (company side)",
+   "synonyms": [
+    "service repair",
+    "communication pipe",
+    "comm pipe",
+    "stop tap",
+    "supply pipe",
+    "service pipe"
+   ],
+   "disruptive": false
+  },
+  {
+   "code": "customer_side_leak",
+   "label": "Customer-side leak",
+   "synonyms": [
+    "customer leak",
+    "customer side leak",
+    "private leak"
+   ],
+   "disruptive": false
+  },
+  {
+   "code": "valve_operation",
+   "label": "Valve operation",
+   "synonyms": [
+    "valve operation",
+    "valve op",
+    "valve operated"
+   ],
+   "disruptive": true
+  },
+  {
+   "code": "isolation",
+   "label": "Isolation",
+   "synonyms": [
+    "isolation",
+    "shut off",
+    "shutdown"
+   ],
+   "disruptive": true
+  },
+  {
+   "code": "rezone",
+   "label": "Rezone",
+   "synonyms": [
+    "rezone",
+    "rezoning",
+    "boundary change"
+   ],
+   "disruptive": true
+  },
+  {
+   "code": "flush",
+   "label": "Flush",
+   "synonyms": [
+    "flush",
+    "flushing",
+    "mains flushing"
+   ],
+   "disruptive": false
+  },
+  {
+   "code": "maintenance",
+   "label": "Maintenance",
+   "synonyms": [
+    "maintenance",
+    "replacement",
+    "replace",
+    "meter",
+    "hydrant",
+    "chamber",
+    "valve"
+   ],
+   "disruptive": false
+  },
+  {
+   "code": "investigation",
+   "label": "Investigation",
+   "synonyms": [
+    "investigation",
+    "investigate",
+    "survey",
+    "inspection"
+   ],
+   "disruptive": false
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ],
+   "disruptive": false
+  },
+  {
+   "code": "unclassified",
+   "label": "Unclassified (type not known to the mapping - reported)",
+   "synonyms": [],
+   "disruptive": false
+  }
+ ]
+}

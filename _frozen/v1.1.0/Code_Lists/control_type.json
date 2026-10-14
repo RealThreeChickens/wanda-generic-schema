@@ -1,0 +1,67 @@
+{
+ "code_list": "control_type",
+ "version": "1.1.0",
+ "description": "WI control of a DMA sub-area: what sets its pressure / flow.",
+ "codes": [
+  {
+   "code": "gravity",
+   "label": "Gravity (no control inside the DMA)",
+   "synonyms": [
+    "gravity"
+   ]
+  },
+  {
+   "code": "prv",
+   "label": "Pressure reducing valve",
+   "synonyms": [
+    "prv",
+    "pressure reduced",
+    "pressure reducing valve",
+    "pressure managed",
+    "pressure managed area",
+    "pressure area"
+   ]
+  },
+  {
+   "code": "psv",
+   "label": "Pressure sustaining valve",
+   "synonyms": [
+    "psv",
+    "pressure sustaining valve"
+   ]
+  },
+  {
+   "code": "fcv",
+   "label": "Flow control valve",
+   "synonyms": [
+    "fcv",
+    "flow control",
+    "flow control valve"
+   ]
+  },
+  {
+   "code": "pumped",
+   "label": "Pumped / boosted",
+   "synonyms": [
+    "pumped",
+    "boosted",
+    "booster"
+   ]
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ]
+  },
+  {
+   "code": "unknown",
+   "label": "Not recorded",
+   "synonyms": [
+    "unknown",
+    "not known"
+   ]
+  }
+ ]
+}

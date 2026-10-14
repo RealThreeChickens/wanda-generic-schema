@@ -1,0 +1,117 @@
+{
+ "code_list": "asset_type",
+ "version": "1.0.0",
+ "description": "WI asset type of the `assets` layer (clean-water point assets with no layer of their own; generic UK wording).",
+ "codes": [
+  {
+   "code": "access_point",
+   "label": "Access point / manway / hatch",
+   "synonyms": [
+    "access point",
+    "manway",
+    "access manway",
+    "hatch",
+    "hatch box"
+   ]
+  },
+  {
+   "code": "chamber",
+   "label": "Chamber / meter box",
+   "synonyms": [
+    "chamber",
+    "meter box",
+    "valve chamber",
+    "pit"
+   ]
+  },
+  {
+   "code": "boundary_box",
+   "label": "Boundary box",
+   "synonyms": [
+    "boundary box",
+    "msm box"
+   ]
+  },
+  {
+   "code": "monitoring_point",
+   "label": "Monitoring / logging point",
+   "synonyms": [
+    "monitoring point",
+    "pressure monitoring point",
+    "critical monitor point",
+    "monitor point",
+    "logger",
+    "data logger",
+    "leak noise correlation point"
+   ]
+  },
+  {
+   "code": "sampling_point",
+   "label": "Sampling point",
+   "synonyms": [
+    "sampling point",
+    "sample point",
+    "sample tap"
+   ]
+  },
+  {
+   "code": "insertion_point",
+   "label": "Insertion point (probe / swab / meter)",
+   "synonyms": [
+    "insertion point",
+    "swab insertion point",
+    "insertion probe point",
+    "insertion meter point"
+   ]
+  },
+  {
+   "code": "inlet",
+   "label": "Inlet / abstraction point",
+   "synonyms": [
+    "inlet",
+    "inlet point",
+    "abstraction point",
+    "surface water abstraction point"
+   ]
+  },
+  {
+   "code": "anode",
+   "label": "Anode / cathodic protection",
+   "synonyms": [
+    "anode",
+    "cathodic protection"
+   ]
+  },
+  {
+   "code": "dosing_point",
+   "label": "Dosing point",
+   "synonyms": [
+    "dosing point",
+    "dosing facility"
+   ]
+  },
+  {
+   "code": "structure",
+   "label": "Structure (pipe bridge, support ...)",
+   "synonyms": [
+    "structure",
+    "pipe bridge",
+    "support"
+   ]
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ]
+  },
+  {
+   "code": "unknown",
+   "label": "Unknown",
+   "synonyms": [
+    "unknown"
+   ]
+  }
+ ]
+}

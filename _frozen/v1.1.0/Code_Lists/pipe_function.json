@@ -1,0 +1,76 @@
+{
+ "code_list": "pipe_function",
+ "version": "1.1.0",
+ "description": "WI pipe function. serves_customers: properties may be linked to it (rule R2). potable_network: part of the potable network the apps analyse (rule R3).",
+ "attributes": {
+  "serves_customers": "properties may be linked to this pipe",
+  "potable_network": "part of the potable network the apps analyse"
+ },
+ "codes": [
+  {
+   "code": "distribution",
+   "label": "Distribution main",
+   "synonyms": [
+    "distribution",
+    "distribution main"
+   ],
+   "serves_customers": true,
+   "potable_network": true
+  },
+  {
+   "code": "trunk",
+   "label": "Trunk / transmission main",
+   "synonyms": [
+    "trunk",
+    "trunk main",
+    "transmission",
+    "transmission main"
+   ],
+   "serves_customers": false,
+   "potable_network": true
+  },
+  {
+   "code": "raw",
+   "label": "Raw water main",
+   "synonyms": [
+    "raw",
+    "raw water",
+    "raw water main"
+   ],
+   "serves_customers": false,
+   "potable_network": false
+  },
+  {
+   "code": "communication",
+   "label": "Communication / service pipe",
+   "synonyms": [
+    "communication",
+    "communication pipe",
+    "comm pipe",
+    "service pipe"
+   ],
+   "serves_customers": false,
+   "potable_network": true
+  },
+  {
+   "code": "non_potable",
+   "label": "Non-potable",
+   "synonyms": [
+    "non potable",
+    "non-potable"
+   ],
+   "serves_customers": false,
+   "potable_network": false
+  },
+  {
+   "code": "unknown",
+   "label": "Unknown",
+   "synonyms": [
+    "unknown"
+   ],
+   "serves_customers": true,
+   "potable_network": true,
+   "serves_customers_status": "James to set (default true: a pipe of unknown function may serve customers)"
+  }
+ ]
+}

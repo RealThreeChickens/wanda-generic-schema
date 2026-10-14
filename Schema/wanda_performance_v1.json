@@ -1,0 +1,556 @@
+{
+ "schema": "wanda_performance_v1",
+ "version": "1.0.0",
+ "status": "draft for James's sign-off",
+ "description": "WANDa performance data: customer contacts, network events, water quality samples and flush records. One CSV per kind (UTF-8, header row = the field names below, in this order). Equal to the PLDR STANDARD template that every client may already import (no app change).",
+ "container": {
+  "format": "csv",
+  "encoding": "utf-8",
+  "delimiter": ",",
+  "header": true,
+  "file_pattern": "{kind}__{table}.csv",
+  "delivery_file": "wanda_delivery.json"
+ },
+ "types": {
+  "ref": "text exactly as delivered (a float id 12345.0 is written 12345; leading zeros kept); never changed",
+  "text": "free text as delivered (phone numbers / e-mail addresses inside free text are removed)",
+  "code": "a code from the field's code list",
+  "date": "ISO 8601 date yyyy-mm-dd",
+  "datetime": "ISO 8601 yyyy-mm-dd, or yyyy-mm-ddThh:mm:ss when a time is known",
+  "time": "hh:mm (24 h)",
+  "number": "decimal number, '.' as decimal point, no thousands separator",
+  "int": "whole number",
+  "bool": "'1' = yes, blank = not said (the PLDR reader reads any non-blank text as yes)",
+  "list": "several refs separated by ';'"
+ },
+ "kinds": {
+  "contacts": {
+   "description": "Customer contacts (one row per contact). Minimum: contact_date + one location field.",
+   "location_fields": [
+    "x",
+    "y",
+    "lat",
+    "lon",
+    "property_ref",
+    "pipe_ref",
+    "address",
+    "postcode",
+    "client_dma_ref"
+   ],
+   "unique": [
+    [
+     "contact_ref"
+    ]
+   ],
+   "fields": [
+    {
+     "name": "contact_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Client contact (interaction) reference"
+    },
+    {
+     "name": "case_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Client case reference (several contacts may share a case)"
+    },
+    {
+     "name": "contact_date",
+     "type": "datetime",
+     "required": true,
+     "description": "When the contact was received"
+    },
+    {
+     "name": "contact_type",
+     "type": "text",
+     "required": false,
+     "description": "The client's own contact type / reason, as delivered (kept for audit)"
+    },
+    {
+     "name": "category",
+     "type": "code",
+     "required": false,
+     "code_list": "contact_category",
+     "description": "WI category of contact_type"
+    },
+    {
+     "name": "property_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Property / customer point reference (e.g. UPRN)"
+    },
+    {
+     "name": "pipe_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Client pipe reference, when the client gives one"
+    },
+    {
+     "name": "x",
+     "type": "number",
+     "required": false,
+     "units": "m",
+     "description": "Easting, British National Grid (EPSG:27700), metres"
+    },
+    {
+     "name": "y",
+     "type": "number",
+     "required": false,
+     "units": "m",
+     "description": "Northing, British National Grid (EPSG:27700), metres"
+    },
+    {
+     "name": "lat",
+     "type": "number",
+     "required": false,
+     "units": "deg",
+     "description": "Latitude, WGS84 (EPSG:4326) - when no x/y is given"
+    },
+    {
+     "name": "lon",
+     "type": "number",
+     "required": false,
+     "units": "deg",
+     "description": "Longitude, WGS84 (EPSG:4326) - when no x/y is given"
+    },
+    {
+     "name": "address",
+     "type": "text",
+     "required": false,
+     "description": "Address or location line"
+    },
+    {
+     "name": "postcode",
+     "type": "text",
+     "required": false,
+     "description": "UK postcode (when blank the app takes it from the end of address)"
+    },
+    {
+     "name": "description",
+     "type": "text",
+     "required": false,
+     "description": "Free-text description"
+    },
+    {
+     "name": "client_dma_ref",
+     "type": "ref",
+     "required": false,
+     "description": "The client's DMA reference for the contact"
+    },
+    {
+     "name": "dmz",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: district metered zone / control group, as delivered"
+    },
+    {
+     "name": "manager_area",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: operational / manager area, as delivered"
+    },
+    {
+     "name": "region",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: region / division / management area, as delivered"
+    },
+    {
+     "name": "zone",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: water supply / water quality zone, as delivered"
+    }
+   ]
+  },
+  "network_events": {
+   "description": "Network events: bursts, mains / service repairs, customer-side leaks, valve operations, isolations, rezones, flushes. Minimum: event_date + one location field.",
+   "location_fields": [
+    "x",
+    "y",
+    "lat",
+    "lon",
+    "pipe_ref",
+    "asset_ref",
+    "address",
+    "postcode",
+    "client_dma_ref"
+   ],
+   "unique": [
+    [
+     "event_ref"
+    ]
+   ],
+   "fields": [
+    {
+     "name": "event_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Client event / work order reference"
+    },
+    {
+     "name": "case_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Linked client case or contact reference"
+    },
+    {
+     "name": "event_date",
+     "type": "datetime",
+     "required": true,
+     "description": "When the event was raised / happened"
+    },
+    {
+     "name": "end_date",
+     "type": "datetime",
+     "required": false,
+     "description": "When the work was completed"
+    },
+    {
+     "name": "event_type",
+     "type": "code",
+     "required": true,
+     "code_list": "event_type",
+     "description": "WI event type (the PLDR template derives its category from it)"
+    },
+    {
+     "name": "category",
+     "type": "code",
+     "required": false,
+     "code_list": "event_type",
+     "description": "Same as event_type (kept for the template)"
+    },
+    {
+     "name": "asset_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Client asset reference (valve, hydrant, equipment)"
+    },
+    {
+     "name": "pipe_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Client pipe reference"
+    },
+    {
+     "name": "x",
+     "type": "number",
+     "required": false,
+     "units": "m",
+     "description": "Easting, British National Grid (EPSG:27700), metres"
+    },
+    {
+     "name": "y",
+     "type": "number",
+     "required": false,
+     "units": "m",
+     "description": "Northing, British National Grid (EPSG:27700), metres"
+    },
+    {
+     "name": "lat",
+     "type": "number",
+     "required": false,
+     "units": "deg",
+     "description": "Latitude, WGS84 (EPSG:4326) - when no x/y is given"
+    },
+    {
+     "name": "lon",
+     "type": "number",
+     "required": false,
+     "units": "deg",
+     "description": "Longitude, WGS84 (EPSG:4326) - when no x/y is given"
+    },
+    {
+     "name": "address",
+     "type": "text",
+     "required": false,
+     "description": "Address or location line"
+    },
+    {
+     "name": "postcode",
+     "type": "text",
+     "required": false,
+     "description": "UK postcode"
+    },
+    {
+     "name": "description",
+     "type": "text",
+     "required": false,
+     "description": "Free-text description of the work"
+    },
+    {
+     "name": "client_dma_ref",
+     "type": "ref",
+     "required": false,
+     "description": "The client's DMA reference for the event"
+    },
+    {
+     "name": "diameter",
+     "type": "text",
+     "required": false,
+     "units": "mm",
+     "description": "Pipe diameter as delivered (a bare number is mm; a band such as '300 - 450mm' is kept)"
+    },
+    {
+     "name": "material",
+     "type": "text",
+     "required": false,
+     "description": "Pipe material as delivered; the app normalises it to the WI material code list"
+    },
+    {
+     "name": "failure_type",
+     "type": "text",
+     "required": false,
+     "description": "Failure type / mode as delivered"
+    },
+    {
+     "name": "dmz",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: district metered zone / control group, as delivered"
+    },
+    {
+     "name": "manager_area",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: operational / manager area, as delivered"
+    },
+    {
+     "name": "region",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: region / division / management area, as delivered"
+    },
+    {
+     "name": "zone",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: water supply / water quality zone, as delivered"
+    }
+   ]
+  },
+  "wq_samples": {
+   "description": "Water quality results: one row per determinand result in a sample. Minimum: sample_date + determinand + one location field.",
+   "location_fields": [
+    "x",
+    "y",
+    "lat",
+    "lon",
+    "property_ref",
+    "sample_point",
+    "address",
+    "postcode",
+    "client_dma_ref"
+   ],
+   "unique": [
+    [
+     "sample_ref",
+     "determinand"
+    ]
+   ],
+   "fields": [
+    {
+     "name": "sample_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Client sample reference"
+    },
+    {
+     "name": "sample_date",
+     "type": "date",
+     "required": true,
+     "description": "Date the sample was taken"
+    },
+    {
+     "name": "sample_time",
+     "type": "time",
+     "required": false,
+     "description": "Time the sample was taken"
+    },
+    {
+     "name": "determinand",
+     "type": "text",
+     "required": true,
+     "description": "The client's determinand name as delivered (the app reads the WI determinand from its words, incl. 'unflushed')"
+    },
+    {
+     "name": "category",
+     "type": "code",
+     "required": false,
+     "code_list": "determinand",
+     "description": "WI determinand of the name"
+    },
+    {
+     "name": "value",
+     "type": "number",
+     "required": false,
+     "description": "Result value in the delivered units"
+    },
+    {
+     "name": "qualifier",
+     "type": "text",
+     "required": false,
+     "description": "Result qualifier ('<', '>') as delivered"
+    },
+    {
+     "name": "units",
+     "type": "text",
+     "required": false,
+     "description": "Units of value as delivered (the app converts to the determinand's WI unit)"
+    },
+    {
+     "name": "sample_point",
+     "type": "ref",
+     "required": false,
+     "description": "Client sampling point reference"
+    },
+    {
+     "name": "sample_type",
+     "type": "text",
+     "required": false,
+     "description": "Sample type as delivered"
+    },
+    {
+     "name": "sample_reason",
+     "type": "text",
+     "required": false,
+     "description": "Sampling reason as delivered"
+    },
+    {
+     "name": "flushed",
+     "type": "bool",
+     "required": false,
+     "description": "'1' = flushed sample; blank = not said (the app reads 'unflushed' in the determinand name)"
+    },
+    {
+     "name": "x",
+     "type": "number",
+     "required": false,
+     "units": "m",
+     "description": "Easting, British National Grid (EPSG:27700), metres"
+    },
+    {
+     "name": "y",
+     "type": "number",
+     "required": false,
+     "units": "m",
+     "description": "Northing, British National Grid (EPSG:27700), metres"
+    },
+    {
+     "name": "lat",
+     "type": "number",
+     "required": false,
+     "units": "deg",
+     "description": "Latitude, WGS84 (EPSG:4326) - when no x/y is given"
+    },
+    {
+     "name": "lon",
+     "type": "number",
+     "required": false,
+     "units": "deg",
+     "description": "Longitude, WGS84 (EPSG:4326) - when no x/y is given"
+    },
+    {
+     "name": "property_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Property reference (e.g. UPRN)"
+    },
+    {
+     "name": "address",
+     "type": "text",
+     "required": false,
+     "description": "Address"
+    },
+    {
+     "name": "postcode",
+     "type": "text",
+     "required": false,
+     "description": "UK postcode"
+    },
+    {
+     "name": "client_dma_ref",
+     "type": "ref",
+     "required": false,
+     "description": "The client's DMA reference for the sample"
+    },
+    {
+     "name": "dmz",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: district metered zone / control group, as delivered"
+    },
+    {
+     "name": "manager_area",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: operational / manager area, as delivered"
+    },
+    {
+     "name": "region",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: region / division / management area, as delivered"
+    },
+    {
+     "name": "zone",
+     "type": "ref",
+     "required": false,
+     "description": "Client area level: water supply / water quality zone, as delivered"
+    }
+   ]
+  },
+  "flush_records": {
+   "description": "Flush / conditioning records: one row per flush (or per hydrant used; rows of one DMA and date merge into one flush).",
+   "location_fields": [
+    "dma_ref"
+   ],
+   "unique": [],
+   "fields": [
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": true,
+     "description": "DMA flushed"
+    },
+    {
+     "name": "flush_date",
+     "type": "date",
+     "required": true,
+     "description": "Date the flush started"
+    },
+    {
+     "name": "end_date",
+     "type": "date",
+     "required": false,
+     "description": "Date the flush was completed"
+    },
+    {
+     "name": "flush_type",
+     "type": "text",
+     "required": false,
+     "description": "Flush type / method as delivered"
+    },
+    {
+     "name": "udf",
+     "type": "bool",
+     "required": false,
+     "description": "'1' = unidirectional flush (every pipe in the DMA), blank = not said"
+    },
+    {
+     "name": "hydrant_refs",
+     "type": "list",
+     "required": false,
+     "description": "Hydrants used, ';' separated"
+    },
+    {
+     "name": "hydrant_count",
+     "type": "int",
+     "required": false,
+     "description": "Number of hydrants used"
+    }
+   ]
+  }
+ }
+}

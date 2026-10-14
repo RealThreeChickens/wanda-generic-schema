@@ -1,0 +1,71 @@
+{
+ "code_list": "status",
+ "version": "1.1.0",
+ "description": "WI asset status. in_network: the asset is part of the network the apps analyse (rule R1); every asset is kept, status says which are in the network.",
+ "attributes": {
+  "in_network": "kept in the network the apps analyse"
+ },
+ "codes": [
+  {
+   "code": "operational",
+   "label": "In use",
+   "synonyms": [
+    "operational",
+    "in use",
+    "in service",
+    "live",
+    "active"
+   ],
+   "in_network": true
+  },
+  {
+   "code": "non_operational",
+   "label": "Not in use",
+   "synonyms": [
+    "non operational",
+    "non-operational",
+    "not in use",
+    "out of service"
+   ],
+   "in_network": false
+  },
+  {
+   "code": "mothballed",
+   "label": "Mothballed",
+   "synonyms": [
+    "mothballed",
+    "idle"
+   ],
+   "in_network": false
+  },
+  {
+   "code": "abandoned",
+   "label": "Abandoned / decommissioned",
+   "synonyms": [
+    "abandoned",
+    "decommissioned",
+    "removed",
+    "disused"
+   ],
+   "in_network": false
+  },
+  {
+   "code": "proposed",
+   "label": "Proposed / planned",
+   "synonyms": [
+    "proposed",
+    "planned",
+    "design"
+   ],
+   "in_network": false
+  },
+  {
+   "code": "unknown",
+   "label": "Unknown",
+   "synonyms": [
+    "unknown"
+   ],
+   "in_network": true
+  }
+ ]
+}

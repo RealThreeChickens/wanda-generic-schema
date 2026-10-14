@@ -1,0 +1,126 @@
+{
+ "code_list": "determinand",
+ "version": "1.0.0",
+ "description": "WI water quality determinand, with the unit it is held in and the UK prescribed value at the tap.",
+ "attributes": {
+  "unit": "unit the value is held in",
+  "pcv": "UK prescribed concentration or value at the tap",
+  "discolouration": "counts for discolouration"
+ },
+ "codes": [
+  {
+   "code": "iron",
+   "label": "Iron (total)",
+   "synonyms": [
+    "iron",
+    "iron total",
+    "total iron",
+    "iron unflushed",
+    "fe"
+   ],
+   "unit": "ug/l",
+   "pcv": 200.0,
+   "discolouration": true
+  },
+  {
+   "code": "manganese",
+   "label": "Manganese (total)",
+   "synonyms": [
+    "manganese",
+    "manganese total",
+    "total manganese",
+    "manganese unflushed",
+    "mn"
+   ],
+   "unit": "ug/l",
+   "pcv": 50.0,
+   "discolouration": true
+  },
+  {
+   "code": "aluminium",
+   "label": "Aluminium (total)",
+   "synonyms": [
+    "aluminium",
+    "aluminium total",
+    "aluminum",
+    "al"
+   ],
+   "unit": "ug/l",
+   "pcv": 200.0,
+   "discolouration": false
+  },
+  {
+   "code": "turbidity",
+   "label": "Turbidity",
+   "synonyms": [
+    "turbidity"
+   ],
+   "unit": "NTU",
+   "pcv": 4.0,
+   "discolouration": true
+  },
+  {
+   "code": "colour",
+   "label": "Colour",
+   "synonyms": [
+    "colour",
+    "color"
+   ],
+   "unit": "mg/l Pt/Co",
+   "pcv": 20.0,
+   "discolouration": true
+  },
+  {
+   "code": "free_chlorine",
+   "label": "Free chlorine",
+   "synonyms": [
+    "chlorine free",
+    "free chlorine"
+   ],
+   "unit": "mg/l",
+   "pcv": null,
+   "discolouration": false
+  },
+  {
+   "code": "total_chlorine",
+   "label": "Total chlorine",
+   "synonyms": [
+    "chlorine total",
+    "total chlorine"
+   ],
+   "unit": "mg/l",
+   "pcv": null,
+   "discolouration": false
+  },
+  {
+   "code": "hardness",
+   "label": "Hardness",
+   "synonyms": [
+    "hardness",
+    "hardness total",
+    "total hardness"
+   ],
+   "unit": "mg/l as Ca",
+   "pcv": null,
+   "discolouration": false
+  },
+  {
+   "code": "alkalinity",
+   "label": "Alkalinity",
+   "synonyms": [
+    "alkalinity"
+   ],
+   "unit": "mg/l as CaCO3",
+   "pcv": null,
+   "discolouration": false
+  },
+  {
+   "code": "other",
+   "label": "Other determinand",
+   "synonyms": [],
+   "unit": "",
+   "pcv": null,
+   "discolouration": false
+  }
+ ]
+}

@@ -1,0 +1,49 @@
+{
+ "code_list": "hydrant_type",
+ "version": "1.1.0",
+ "description": "WI hydrant function. The bore / jumper class (FB / FJ / LJ) is the separate list hydrant_class.",
+ "codes": [
+  {
+   "code": "fire",
+   "label": "Fire hydrant",
+   "synonyms": [
+    "fire",
+    "fire hydrant"
+   ]
+  },
+  {
+   "code": "washout",
+   "label": "Washout hydrant",
+   "synonyms": [
+    "washout",
+    "washout hydrant",
+    "drain down",
+    "drain-down hydrant",
+    "scour hydrant"
+   ]
+  },
+  {
+   "code": "standard",
+   "label": "Standard hydrant",
+   "synonyms": [
+    "standard",
+    "hydrant"
+   ]
+  },
+  {
+   "code": "private",
+   "label": "Private hydrant",
+   "synonyms": [
+    "private",
+    "private hydrant"
+   ]
+  },
+  {
+   "code": "unknown",
+   "label": "Unknown",
+   "synonyms": [
+    "unknown"
+   ]
+  }
+ ]
+}

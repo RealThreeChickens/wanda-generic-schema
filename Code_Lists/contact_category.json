@@ -1,0 +1,152 @@
+{
+ "code_list": "contact_category",
+ "version": "1.0.0",
+ "description": "WI category of a customer contact (UK DWI consumer-contact terms). Any colour of discolouration is discolouration.",
+ "attributes": {
+  "pldr": "counts for PLDR (discolouration)"
+ },
+ "codes": [
+  {
+   "code": "discolouration",
+   "label": "Discoloured water (any colour)",
+   "synonyms": [
+    "discoloured water",
+    "discolouration",
+    "discoloration",
+    "dirty water",
+    "brown water",
+    "black water",
+    "orange water",
+    "rusty water",
+    "coloured water",
+    "blue green water"
+   ],
+   "pldr": true
+  },
+  {
+   "code": "particles",
+   "label": "Particles in water",
+   "synonyms": [
+    "particles",
+    "bits in water",
+    "sediment"
+   ],
+   "pldr": false
+  },
+  {
+   "code": "white_air",
+   "label": "White water - air",
+   "synonyms": [
+    "white water",
+    "aerated water",
+    "air in water",
+    "milky water",
+    "cloudy water",
+    "air"
+   ],
+   "pldr": false
+  },
+  {
+   "code": "white_chalk",
+   "label": "White water - chalk",
+   "synonyms": [
+    "chalk",
+    "chalky water",
+    "white chalk",
+    "white deposits"
+   ],
+   "pldr": false
+  },
+  {
+   "code": "taste_odour",
+   "label": "Taste / odour",
+   "synonyms": [
+    "taste",
+    "odour",
+    "taste/odour",
+    "taste and odour",
+    "smell",
+    "chlorine taste",
+    "tcp",
+    "musty",
+    "metallic taste"
+   ],
+   "pldr": false
+  },
+  {
+   "code": "organisms",
+   "label": "Organisms (animalcules)",
+   "synonyms": [
+    "animals",
+    "animalcules",
+    "organisms",
+    "worms",
+    "insects"
+   ],
+   "pldr": false
+  },
+  {
+   "code": "general_conditions",
+   "label": "General conditions (slime and similar)",
+   "synonyms": [
+    "slime"
+   ],
+   "pldr": false
+  },
+  {
+   "code": "contamination",
+   "label": "Contamination",
+   "synonyms": [
+    "contamination",
+    "contaminated water"
+   ],
+   "pldr": false
+  },
+  {
+   "code": "low_pressure",
+   "label": "Low pressure",
+   "synonyms": [
+    "low pressure",
+    "pressure",
+    "poor pressure"
+   ],
+   "pldr": false
+  },
+  {
+   "code": "no_supply",
+   "label": "No supply / interruption",
+   "synonyms": [
+    "no water",
+    "no supply",
+    "interruption to supply",
+    "supply interruption",
+    "loss of supply"
+   ],
+   "pldr": false
+  },
+  {
+   "code": "not_client_responsibility",
+   "label": "Not the water company's responsibility",
+   "synonyms": [
+    "not company responsibility",
+    "customer responsibility",
+    "private side"
+   ],
+   "pldr": false
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ],
+   "pldr": false
+  },
+  {
+   "code": "unclassified",
+   "label": "Unclassified (type not known to the mapping - reported)",
+   "synonyms": [],
+   "pldr": false
+  }
+ ]
+}
