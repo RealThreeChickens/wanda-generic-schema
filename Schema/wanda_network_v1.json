@@ -1,7 +1,7 @@
 {
  "schema": "wanda_network_v1",
  "version": "1.2.1",
- "status": "v1.2.1 (16/10: text only - valid polygons, container.polygons) for James's signature; v1.2.0 signed std-2026.10.14 (v1.1.0 frozen in ..\\_frozen\\v1.1.0; 1.2 = James's standing rules 13/10: one import, all apps; accept all GIS; personal data never imported; uncertain classes flagged)",
+ "status": "v1.2.1 (16/10: text only - valid polygons, container.polygons) signed std-2026.10.16 (v1.2.0 frozen in _frozen/network_1.2.0); v1.2.0 signed std-2026.10.14 (v1.1.0 frozen in ..\\_frozen\\v1.1.0; 1.2 = James's standing rules 13/10: one import, all apps; accept all GIS; personal data never imported; uncertain classes flagged)",
  "description": "WANDa network GIS. One GeoPackage, one layer per kind (layer name = kind name), EPSG:27700, coordinates in metres. Layers are aligned to the PLDR project tables (app_table / app). The converter changes only layer names, field names and the delivery's own codes; values (coordinates, diameters, lengths, dates, refs) are as delivered. App behaviour comes from ONE rule per code attribute (rules), never from per-client tables. ONE IMPORT, ALL APPS (v1.2): every clean-water layer and field of a delivery comes in - assets of every status and function (abandoned / proposed kept with status, raw / non-potable and service pipes with pipe_function, customer meters with meter_function, other point assets in `assets`) and every source field with no WI field in the row's `extra` bag; the apps take what they need by the rules. Waste-water layers stay out.",
  "container": {
   "format": "gpkg",
