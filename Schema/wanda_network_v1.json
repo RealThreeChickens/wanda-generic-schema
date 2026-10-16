@@ -1,7 +1,7 @@
 {
  "schema": "wanda_network_v1",
- "version": "1.2.0",
- "status": "v1.2.0 for James's signature (v1.1.0 frozen in ..\\_frozen\\v1.1.0; 1.2 = James's standing rules 13/10: one import, all apps; accept all GIS; personal data never imported; uncertain classes flagged)",
+ "version": "1.2.1",
+ "status": "v1.2.1 (16/10: text only - valid polygons, container.polygons) for James's signature; v1.2.0 signed std-2026.10.14 (v1.1.0 frozen in ..\\_frozen\\v1.1.0; 1.2 = James's standing rules 13/10: one import, all apps; accept all GIS; personal data never imported; uncertain classes flagged)",
  "description": "WANDa network GIS. One GeoPackage, one layer per kind (layer name = kind name), EPSG:27700, coordinates in metres. Layers are aligned to the PLDR project tables (app_table / app). The converter changes only layer names, field names and the delivery's own codes; values (coordinates, diameters, lengths, dates, refs) are as delivered. App behaviour comes from ONE rule per code attribute (rules), never from per-client tables. ONE IMPORT, ALL APPS (v1.2): every clean-water layer and field of a delivery comes in - assets of every status and function (abandoned / proposed kept with status, raw / non-potable and service pipes with pipe_function, customer meters with meter_function, other point assets in `assets`) and every source field with no WI field in the row's `extra` bag; the apps take what they need by the rules. Waste-water layers stay out.",
  "container": {
   "format": "gpkg",
@@ -12,7 +12,7 @@
    "dma_subs"
   ],
   "delivery_file": "wanda_delivery.json",
-  "polygons": "MultiPolygon layers accept Polygon rows",
+  "polygons": "MultiPolygon layers accept Polygon rows. Every polygon in a filed set is valid (OGC): the converter repairs an invalid one as delivered (make_valid, polygon parts kept) and records each repair in wanda_delivery.json (geometry_repaired); the validator refuses an invalid polygon (NW-INVALID). 1.2.1, 16/10/2026",
   "row_order": "the converter keeps the source row order within each layer (readers that keep the first of duplicate refs depend on it)",
   "lines": "pipes is a LineString layer: the converter merges a multi-part line whose parts join into one LineString; a multi-part line whose parts do not join is kept as MultiLineString in the same layer with pipes.multipart = '1' (the only multi geometry a line layer may hold)",
   "scope": "clean water only: every clean-water layer of a delivery is mapped to a WI layer or declared in the mapping's excluded list (the converter reports any delivered layer that is neither); waste-water layers (sewers, drainage areas, waste-water assets) are excluded",

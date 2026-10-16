@@ -1,8 +1,8 @@
 {
  "standard": "wanda_standard",
- "date": "2026-10-14",
+ "date": "2026-10-16",
  "schemas": {
-  "wanda_network_v1.json": "1.2.0",
+  "wanda_network_v1.json": "1.2.1",
   "wanda_performance_v1.json": "1.0.0"
  },
  "code_lists": {
