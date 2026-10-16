@@ -1,13 +1,13 @@
 # WANDa (WI) schema v1 - performance data and network GIS
 
-Status: performance v1.0.0 DRAFT, network v1.2.0 FOR JAMES'S SIGNATURE (13/10/2026; v1.1.0 frozen in
-`..\_frozen\v1.1.0\`; not signed - sign-off goes in `..\Signoff\`). Generic: no client names, layouts or codes.
+Status: standard std-2026.10.16 SIGNED by James 16/10/2026 (wanda_network_v1 1.2.1, wanda_performance_v1 1.0.0, valve_type 1.3.2); std-2026.10.14 signed 15/10 (network 1.2.0); sign-offs in `..\Signoff\`; v1.1.0 and network 1.2.0 frozen in `..\_frozen\`.
+Generic: no client names, layouts or codes.
 Machine-readable files are the source; this page only explains them.
 
 | File | What |
 |---|---|
 | `Schema/wanda_performance_v1.json` | Performance data kinds `contacts`, `network_events`, `wq_samples`, `flush_records` (v1.0.0) |
-| `Schema/wanda_network_v1.json` | Network GIS, 17 layers (v1.2.0, below; change log at the end) + ref rules + row flags + the WI app rules R1-R11 |
+| `Schema/wanda_network_v1.json` | Network GIS, 17 layers (v1.2.1, below; change log at the end) + ref rules + row flags + the WI app rules R1-R11 |
 | `Code_Lists/*.json` | 21 code lists (network: `asset_type`, `material`, `status`, `pipe_function`, `water_type`, `units`, `lining`, `valve_type`, `normal_position`, `hydrant_type`, `hydrant_class`, `outlet_arrangement`, `meter_function`, `area_type`, `control_type`, `customer_type`, `non_household_type`, `site_type`; performance: `contact_category`, `event_type`, `determinand`) |
 
 Each field: `name`, `type`, `required`, optional `code_list`, `units`, `ref_to` + `ref_check`, `app` (the PLDR project
@@ -36,7 +36,7 @@ Rules kept from the template:
   code list factor), or lat/lon WGS84.
 - Area levels (`dmz`, `manager_area`, `region`, `zone`) as delivered.
 
-## Network GIS (`wanda_network_v1` v1.2.0)
+## Network GIS (`wanda_network_v1` v1.2.1)
 
 One GeoPackage `wanda_network.gpkg`, EPSG:27700, metres; layer name = kind name; `dma_subs` is an attribute table (no
 geometry); polygon layers are MultiPolygon (Polygon rows accepted). Plus `wanda_delivery.json` (schema version,
@@ -198,9 +198,10 @@ value and coordinate) - the WWI identity skin.
 | valve_type 1.3.0 | 13/10/2026 | New code stop_tap (isolates false - James to confirm) | stop taps imported, no longer dropped |
 | valve_type 1.3.1 | 14/10/2026 | **Reverts the 1.2.0 isolates rule.** isolates true only for isolation valves: sluice, butterfly, boundary, district, motorised. false for prv, psv, frv, pbv, float, nrv, washout, air, stop_tap, other (blank = unknown = false). Codes unchanged (patch) | James 14/10: PRV / PSV / FCV are not isolation valves (water passes backwards; type often unknown); an NRV is no reliable reverse isolation; only isolation valves isolate, for mains repairs and analysis. GIS isolation must match the Synergi isolation scripts MM runs (they close Synergi VL valves only) and the legacy readers (gate valves only) |
 | valve_type 1.3.2 | 14/10/2026 | List-level `blank_isolates: true` (+ `blank_isolates_reason`): a BLANK valve_type isolates; `other` still does not. Codes and per-code isolates unchanged (patch). 1.3.1 kept in `..\_frozen\valve_type_1.3.1\` | James 14/10: an unrecorded type is far more likely an ordinary isolation valve than a PRV; aligns every app (PLDR already did this; WDA aligned; PLDR drift check reads the flag) |
+| network 1.2.1 | 16/10/2026 | text only: every filed area polygon valid; converter repairs invalid polygons (make_valid structure) and records geometry_repaired; validator refuses an unrepaired one (NW-INVALID); no field / layer / code change, 1.2.0 sets still read | James 16/10 |
 
 All v1.2.0 changes are additive for a reader of the WI set (new optional fields at the end of each layer, a new layer,
 new codes) except pipe_function.unknown serves_customers (true -> false). All v1.1.0 changes are additive (new optional fields, a new optional layer, new codes) or label / attribute
-corrections; a v1.0.0 set still reads. For James's signature with v1.0.0 (`..\Signoff\`).
+corrections; a v1.0.0 set still reads. Network 1.2.1 is text only: a 1.2.0 set still reads. Sign-offs: `..\Signoff\`.
 
 - material code list 1.2.1 (13/10/2026): bands aligned with the decided WRc banding - AK 3 -> 1 (black alkathene, PE family), FRC 3 -> 2 (like AC; James 13/10).
