@@ -149,6 +149,38 @@ WI writes this schema itself: `04_Generator\src\wanda_network.py` (region_gis `-
 into `Skins\_preimport_gis\wanda_network\`). Its identity proof rebuilds the Truth GIS from the gpkg exactly (every
 value and coordinate) - the WWI identity skin.
 
+## Health check (`wanda_health_v1` 1.0.0 - DRAFT for James's sign-off, 19/10/2026)
+
+Not in the standard yet (no STANDARD.json entry, no tag) until James signs. Review only, warning only: never feeds
+scores or plans, never refuses an app; a missing set = "no health check available". Not a delivery schema - written
+only by `wanda_import health` into `derived\health\<YYYY-MM-DD>_health\` (registry kind `health`, owner wanda_import).
+
+| File in the set | What |
+|---|---|
+| `dma_health.csv` | kind `dma_health`: one row per model + DMA, plus one model row (blank `dma_ref`) per model; key model_name + gis_set + dma_ref (names are the control) |
+| `wanda_health.json` | set record: schema, version, basis, client_id, created_at, built_with, status (complete / refused) + reason, risk_rules, gis_set, projects[] (names, folder_rel, build GIS set, models set, built_at, sources found) |
+| `built_from.json` | `{"gis": <gis set used>}` - `wanda_client check` reports STALE when a newer GIS set is filed |
+
+v0 (basis `start`) = the build-time model-vs-GIS compare each live PLDR project already holds: GIS pipes linked per
+DMA (= the regional ranking model coverage), modelled length, trace readiness, model pipes linked, spatial links
+refused, linked mains with no DMA. Code lists: `health_basis` (start, change), `health_risk` (none, low, medium, high,
+not_assessed; attribute rank), `dma_state` (modelled, partly_modelled, in_extent_not_linked, not_modelled, model),
+`health_fact` (v0 codes only; attributes basis, asset_family, default_risk).
+
+| health_fact (v0) | default_risk | Raised when |
+|---|---|---|
+| dma_not_modelled | not_assessed | no GIS pipe of the DMA linked, DMA not inside the model extent |
+| dma_in_extent_not_linked | high | no pipe linked, DMA inside the model extent (build linkage gate) |
+| dma_partly_modelled | medium | 50 % or less of the DMA's GIS pipes linked (at least one) |
+| trace_blocked / trace_warning | high / medium | build trace readiness blocked / warning |
+| gis_pipes_not_linked | low | a modelled DMA below 95 % linked |
+| spatial_link_rejected | low | the build refused spatial links in the DMA (no DMA: model row) |
+| model_pipes_not_linked | low | model row: a model pipe links to no GIS pipe |
+| linked_main_no_dma | low | model row: a linked GIS main has no DMA |
+
+Risk rules `v0-D6`: risk = highest default_risk of the row's facts; a not modelled DMA = not_assessed; no facts =
+none. v1 adds the GIS change log (basis change: change facts, `gis_changes`, change columns, model row = worst DMA).
+
 ## Open points for James
 
 1. Spun iron: one WI code `SCI` for any delivered spun iron (no auto synonym for the short code "SI" - it goes to the
