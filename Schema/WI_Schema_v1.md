@@ -172,7 +172,7 @@ not_assessed; attribute rank), `dma_state` (modelled, partly_modelled, in_extent
 | dma_not_modelled | not_assessed | no GIS pipe of the DMA linked, DMA not inside the model extent |
 | dma_in_extent_not_linked | high | no pipe linked, DMA inside the model extent (build linkage gate) |
 | dma_partly_modelled | medium | 50 % or less of the DMA's GIS pipes linked (at least one) |
-| trace_blocked / trace_warning | high / medium | build trace readiness blocked / warning |
+| trace_blocked / trace_warning | high / medium | build trace readiness blocked / warning, in a DMA with at least one pipe linked (PLDR also traces clip-only DMAs: not a model fact) |
 | gis_pipes_not_linked | low | a modelled DMA below 95 % linked |
 | spatial_link_rejected | low | the build refused spatial links in the DMA (no DMA: model row) |
 | model_pipes_not_linked | low | model row: a model pipe links to no GIS pipe |
