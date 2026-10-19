@@ -5,7 +5,7 @@
  "description": "WANDa health check facts (v0, basis start; v1 adds the change facts). Each app filters on these codes; risk = highest default_risk. Readers accept codes they do not know (later versions add codes).",
  "attributes": {
   "basis": "the health_basis the fact belongs to",
-  "asset_family": "dma or pipe (v1 adds valve, hydrant, meter)",
+  "asset_family": "dma, pipe or valve (later versions add hydrant, meter)",
   "default_risk": "health_risk code"
  },
  "codes": [
@@ -71,6 +71,22 @@
    "synonyms": [],
    "basis": "start",
    "asset_family": "pipe",
+   "default_risk": "low"
+  },
+  {
+   "code": "valve_shut_in_gis_open_in_model",
+   "label": "Isolation valve shut in the GIS carries flow in the model at 24:00 (open in the model)",
+   "synonyms": [],
+   "basis": "start",
+   "asset_family": "valve",
+   "default_risk": "high"
+  },
+  {
+   "code": "valve_open_in_gis_no_flow_in_model",
+   "label": "Isolation valve open in the GIS carries no flow in the model at 24:00 (shut or idle in the model)",
+   "synonyms": [],
+   "basis": "start",
+   "asset_family": "valve",
    "default_risk": "low"
   }
  ]

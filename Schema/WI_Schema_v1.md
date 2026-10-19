@@ -163,9 +163,9 @@ only by `wanda_import health` into `derived\health\<YYYY-MM-DD>_health\` (regist
 
 v0 (basis `start`) = the build-time model-vs-GIS compare each live PLDR project already holds: GIS pipes linked per
 DMA (= the regional ranking model coverage), modelled length, trace readiness, model pipes linked, spatial links
-refused, linked mains with no DMA. Code lists: `health_basis` (start, change), `health_risk` (none, low, medium, high;
+refused, linked mains with no DMA, GIS isolation valve positions vs model valve flow. Code lists: `health_basis` (start, change), `health_risk` (none, low, medium, high;
 attribute rank), `model_coverage` (modelled, partly_modelled, in_extent_not_linked, model; not PLDR's `dma_state`
-scored / partial / not_yet_scored), `health_fact` (v0 codes only; attributes basis, asset_family, default_risk).
+scored / partial / not_yet_scored), `health_fact` (v0 codes only; attributes basis, asset_family (dma / pipe / valve), default_risk).
 
 Rows (schema `rows_rule`): one row per DMA PLDR ranks (at least one GIS pipe linked) plus each DMA the build linkage
 gate puts inside the model extent with no pipe linked (`in_extent_not_linked`). PLDR leaves every DMA with no pipe
@@ -186,8 +186,23 @@ every project skipped = refused, nothing written. One set a day, fixed name `<da
 | spatial_link_rejected | low | the build refused spatial links in the DMA (no DMA: model row) |
 | model_pipes_not_linked | low | model row: a model pipe links to no GIS pipe |
 | linked_main_no_dma | low | model row: a linked GIS main has no DMA |
+| valve_shut_in_gis_open_in_model | high | a GIS isolation valve shut in the GIS carries model flow at 24:00 (the model has it open, for certain) |
+| valve_open_in_gis_no_flow_in_model | low | a GIS isolation valve open in the GIS carries no model flow at 24:00 (shut or idle in the model) |
 
 Risk rules `v0-D6`: risk = highest default_risk of the row's facts; no facts = none.
+
+Valve position (v0): per DMA row `valves_shut`, `valves_open`, `valves_not_in_model`, `valves_shut_model_flows`,
+`valves_open_model_no_flow` (before risk_level). GIS side = the project's `gis_valves` isolation valves
+(`is_gate_valve = 1`, grouped on trimmed dma_ref; a boundary valve counts in its GIS dma_ref only); shut = normal
+position C / CLOSED (trimmed, any case, as PLDR's derived risk), open = everything else (O / T / U / blank). Model side
+= the model valve FLOW at 24:00 in `model_results\baseline\FacilityTopology_Flow.csv` (or
+`facility_topology_flow.csv`), rows TYPE Valves, NAME = trimmed valve_ref; flows when abs(FacilityFlow) >=
+`risk_rules.model_flow_min_ls` (1e-6). The evidence is flow, not the model valve setting (PLDR holds no setting):
+GIS shut + flow proves the model open (high, GIS is gold); GIS open + no flow may be shut or simply idle (low).
+`valves_not_in_model` is a column only (no fact). No baseline CSV: the three model columns are blank and
+`sources.facility_topology_flow` is false; no gis_valves table: all five blank. Model row = kept DMA rows +
+isolation valves with no DMA; it raises a valve fact only for the valves with no DMA. Medium ("GIS open, model
+shut") needs a real model setting source (later).
 
 Reader rules (schema `reader_rules`):
 - read by header name and ignore unknown columns (v1 columns are appended after risk_reasons); accept unknown
