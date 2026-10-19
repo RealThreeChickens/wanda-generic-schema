@@ -1,0 +1,33 @@
+{
+ "code_list": "dma_state",
+ "version": "1.0.0",
+ "status": "draft for James's sign-off",
+ "description": "How far a model covers a DMA (wanda_health_v1), from the GIS pipes linked to the model.",
+ "codes": [
+  {
+   "code": "modelled",
+   "label": "Modelled (more than 50 % of GIS pipes linked)",
+   "synonyms": []
+  },
+  {
+   "code": "partly_modelled",
+   "label": "Partly modelled (50 % or less linked, at least one)",
+   "synonyms": []
+  },
+  {
+   "code": "in_extent_not_linked",
+   "label": "Inside the model extent, no pipe linked",
+   "synonyms": []
+  },
+  {
+   "code": "not_modelled",
+   "label": "Not modelled (only in the clipped GIS, no pipe linked)",
+   "synonyms": []
+  },
+  {
+   "code": "model",
+   "label": "The model row (project-wide counts)",
+   "synonyms": []
+  }
+ ]
+}

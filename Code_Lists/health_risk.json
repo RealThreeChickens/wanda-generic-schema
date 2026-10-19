@@ -1,0 +1,41 @@
+{
+ "code_list": "health_risk",
+ "version": "1.0.0",
+ "status": "draft for James's sign-off",
+ "description": "WANDa health check generic risk (warning only). Order none < low < medium < high; not_assessed stands apart.",
+ "attributes": {
+  "rank": "order for 'highest' (null = not ranked)"
+ },
+ "codes": [
+  {
+   "code": "none",
+   "label": "No risk found",
+   "synonyms": [],
+   "rank": 0
+  },
+  {
+   "code": "low",
+   "label": "Low",
+   "synonyms": [],
+   "rank": 1
+  },
+  {
+   "code": "medium",
+   "label": "Medium",
+   "synonyms": [],
+   "rank": 2
+  },
+  {
+   "code": "high",
+   "label": "High",
+   "synonyms": [],
+   "rank": 3
+  },
+  {
+   "code": "not_assessed",
+   "label": "Not assessed (DMA not modelled)",
+   "synonyms": [],
+   "rank": null
+  }
+ ]
+}

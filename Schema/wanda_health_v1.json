@@ -1,0 +1,221 @@
+{
+ "schema": "wanda_health_v1",
+ "version": "1.0.0",
+ "status": "draft for James's sign-off",
+ "description": "WANDa health check: a review-only, warning-only set per region folder, one row per model and DMA, keyed by names (model name + GIS set + DMA). v0 (basis start) files the build-time model-vs-GIS compare that PLDR builds already compute. Every app reads the newest set for its models; a missing set = 'no health check available'. Never feeds scores or plans, never refuses an app. Not a delivery schema: written only by wanda_import health.",
+ "container": {
+  "format": "csv",
+  "encoding": "utf-8",
+  "delimiter": ",",
+  "header": true,
+  "set_name": "derived\\health\\<YYYY-MM-DD>_health",
+  "files": {
+   "dma_health": "dma_health.csv"
+  },
+  "set_record": "wanda_health.json",
+  "built_from": "built_from.json"
+ },
+ "set_record": {
+  "file": "wanda_health.json",
+  "fields": {
+   "schema": "wanda_health_v1",
+   "version": "the schema version",
+   "basis": "health_basis code (start in v0)",
+   "client_id": "the region folder marker client_id",
+   "created_at": "ISO 8601 datetime",
+   "built_with": "tool + commit + dirty (wanda_import built_with)",
+   "status": "complete | refused",
+   "reason": "why refused (blank when complete)",
+   "risk_rules": "the risk_rules block below as used",
+   "gis_set": "the GIS set checked against",
+   "projects": "[{model_name, project_id, project_version, folder_rel, gis_set, models_set, built_at, status, sources: {source: found true / false}}]"
+  }
+ },
+ "built_from": {
+  "file": "built_from.json",
+  "fields": {
+   "gis": "the gis set name the check used: wanda_client check reports STALE when a newer GIS set is filed"
+  }
+ },
+ "risk_rules": {
+  "version": "v0-D6",
+  "partly_modelled_max_pct": 50.0,
+  "link_low_below_pct": 95.0,
+  "rule": "risk = highest default_risk of the row's facts (none < low < medium < high); a not modelled DMA = not_assessed; no facts = none"
+ },
+ "types": {
+  "ref": "text exactly as recorded; never changed",
+  "text": "free text",
+  "code": "a code from the field's code list",
+  "datetime": "ISO 8601",
+  "number": "decimal number, '.' as decimal point",
+  "int": "whole number",
+  "list": "several codes separated by ';'"
+ },
+ "kinds": {
+  "dma_health": {
+   "description": "One row per model and DMA, plus one model row (blank dma_ref) per model. File dma_health.csv, header = the field names in this order.",
+   "unique": [
+    [
+     "model_name",
+     "gis_set",
+     "dma_ref"
+    ]
+   ],
+   "fields": [
+    {
+     "name": "model_name",
+     "type": "ref",
+     "required": true,
+     "description": "Model name (wanda_names rule <area>_<version>_Model), as the PLDR project records it"
+    },
+    {
+     "name": "gis_set",
+     "type": "ref",
+     "required": true,
+     "description": "The GIS set this health check is against: the newest finished inputs\\gis set in the region folder when the check ran (blank region GIS: the project's build GIS set)"
+    },
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": false,
+     "description": "DMA reference as in the GIS; blank = the model row (one per model, project-wide counts)"
+    },
+    {
+     "name": "build_gis_set",
+     "type": "ref",
+     "required": false,
+     "description": "The GIS set the project was built on (pldr_project.json inputs_from.gis)"
+    },
+    {
+     "name": "project_id",
+     "type": "ref",
+     "required": false,
+     "description": "PLDR project id"
+    },
+    {
+     "name": "project_version",
+     "type": "int",
+     "required": false,
+     "description": "PLDR project version number (the live version)"
+    },
+    {
+     "name": "models_set",
+     "type": "ref",
+     "required": false,
+     "description": "The models set the project was built from (pldr_project.json inputs_from.models)"
+    },
+    {
+     "name": "built_at",
+     "type": "datetime",
+     "required": false,
+     "description": "When the project raw build completed (last project_raw_build complete in the build log)"
+    },
+    {
+     "name": "basis",
+     "type": "code",
+     "required": true,
+     "code_list": "health_basis",
+     "description": "start = build-time model-vs-GIS compare (v0); change = GIS change log against the previous extract (v1)"
+    },
+    {
+     "name": "dma_state",
+     "type": "code",
+     "required": true,
+     "code_list": "dma_state",
+     "description": "How far the model covers the DMA (model on the model row)"
+    },
+    {
+     "name": "gis_pipes",
+     "type": "int",
+     "required": false,
+     "description": "GIS pipes in the DMA in the project's GIS (model row: every GIS pipe in the project)"
+    },
+    {
+     "name": "linked_pipes",
+     "type": "int",
+     "required": false,
+     "description": "Of those, GIS pipes linked to a model pipe"
+    },
+    {
+     "name": "pipe_link_pct",
+     "type": "number",
+     "required": false,
+     "units": "%",
+     "description": "linked_pipes / gis_pipes x 100, one decimal (= the PLDR regional ranking model coverage)"
+    },
+    {
+     "name": "gis_length_m",
+     "type": "number",
+     "required": false,
+     "units": "m",
+     "description": "GIS pipe length in the DMA"
+    },
+    {
+     "name": "modelled_length_m",
+     "type": "number",
+     "required": false,
+     "units": "m",
+     "description": "Length of the DMA's GIS pipes linked to the model"
+    },
+    {
+     "name": "length_pct",
+     "type": "number",
+     "required": false,
+     "units": "%",
+     "description": "modelled_length_m / gis_length_m x 100, one decimal"
+    },
+    {
+     "name": "trace_status",
+     "type": "text",
+     "required": false,
+     "description": "The PLDR trace readiness state as the build recorded it (pass, pass_multi_inlet, warning, blocked, no_customers); blank = not evaluated"
+    },
+    {
+     "name": "trace_coverage_pct",
+     "type": "number",
+     "required": false,
+     "units": "%",
+     "description": "Share of the DMA's customers the trace reaches"
+    },
+    {
+     "name": "model_pipes",
+     "type": "int",
+     "required": false,
+     "description": "Model row only: model pipes in the project's model"
+    },
+    {
+     "name": "model_pipes_linked",
+     "type": "int",
+     "required": false,
+     "description": "Model row only: model pipes linked to at least one GIS pipe"
+    },
+    {
+     "name": "spatial_rejected",
+     "type": "int",
+     "required": false,
+     "description": "Spatial (geometry) links the build refused (model row: all of them)"
+    },
+    {
+     "name": "linked_mains_no_dma",
+     "type": "int",
+     "required": false,
+     "description": "Model row only: GIS mains linked to the model with no DMA in the GIS"
+    },
+    {
+     "name": "risk_level",
+     "type": "code",
+     "required": true,
+     "code_list": "health_risk",
+     "description": "The one generic risk: the highest default_risk of risk_reasons; not_assessed when the DMA is not modelled; none when there are no reasons"
+    },
+    {
+     "name": "risk_reasons",
+     "type": "list",
+     "required": false,
+     "description": "The health_fact codes found for the row (';' separated); blank = none"
+    }
+   ]
+  }
+ }
+}

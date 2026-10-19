@@ -1,0 +1,18 @@
+{
+ "code_list": "health_basis",
+ "version": "1.0.0",
+ "status": "draft for James's sign-off",
+ "description": "WANDa health check basis (wanda_health_v1).",
+ "codes": [
+  {
+   "code": "start",
+   "label": "Starting health: the build-time model-vs-GIS compare",
+   "synonyms": []
+  },
+  {
+   "code": "change",
+   "label": "Change: GIS change log against the previous extract (v1)",
+   "synonyms": []
+  }
+ ]
+}
