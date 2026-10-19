@@ -2,21 +2,13 @@
  "code_list": "health_fact",
  "version": "1.0.0",
  "status": "draft for James's sign-off",
- "description": "WANDa health check facts (v0, basis start; v1 adds the change facts). Each app filters on these codes; risk = highest default_risk.",
+ "description": "WANDa health check facts (v0, basis start; v1 adds the change facts). Each app filters on these codes; risk = highest default_risk. Readers accept codes they do not know (later versions add codes).",
  "attributes": {
   "basis": "the health_basis the fact belongs to",
   "asset_family": "dma or pipe (v1 adds valve, hydrant, meter)",
   "default_risk": "health_risk code"
  },
  "codes": [
-  {
-   "code": "dma_not_modelled",
-   "label": "DMA not modelled",
-   "synonyms": [],
-   "basis": "start",
-   "asset_family": "dma",
-   "default_risk": "not_assessed"
-  },
   {
    "code": "dma_in_extent_not_linked",
    "label": "DMA inside the model extent with no pipe linked",

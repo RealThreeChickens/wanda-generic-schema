@@ -28,7 +28,7 @@
    "reason": "why refused (blank when complete)",
    "risk_rules": "the risk_rules block below as used",
    "gis_set": "the GIS set checked against",
-   "projects": "[{model_name, project_id, project_version, folder_rel, gis_set, models_set, built_at, status, sources: {source: found true / false}}]"
+   "projects": "[{model_name, model_name_ok (wanda_names rule; false = name fails the rule), project_id, project_version, folder_rel, gis_set, models_set, built_at, status (ok | skipped: <why>), left_out_dmas (count), left_out_dma_refs, sources: {source: found true / false}}]"
   }
  },
  "built_from": {
@@ -41,7 +41,7 @@
   "version": "v0-D6",
   "partly_modelled_max_pct": 50.0,
   "link_low_below_pct": 95.0,
-  "rule": "risk = highest default_risk of the row's facts (none < low < medium < high); a not modelled DMA = not_assessed; no facts = none"
+  "rule": "risk = highest default_risk of the row's facts (none < low < medium < high); no facts = none"
  },
  "types": {
   "ref": "text exactly as recorded; never changed",
@@ -54,7 +54,7 @@
  },
  "kinds": {
   "dma_health": {
-   "description": "One row per model and DMA, plus one model row (blank dma_ref) per model. File dma_health.csv, header = the field names in this order.",
+   "description": "One row per model and kept DMA (see rows_rule), plus one model row (blank dma_ref) per model. File dma_health.csv, header = the field names in this order; v1 columns are appended after risk_reasons.",
    "unique": [
     [
      "model_name",
@@ -79,7 +79,7 @@
      "name": "dma_ref",
      "type": "ref",
      "required": false,
-     "description": "DMA reference as in the GIS; blank = the model row (one per model, project-wide counts)"
+     "description": "DMA reference as in the GIS; blank = the model row (one per model, see rows_rule)"
     },
     {
      "name": "build_gis_set",
@@ -119,17 +119,17 @@
      "description": "start = build-time model-vs-GIS compare (v0); change = GIS change log against the previous extract (v1)"
     },
     {
-     "name": "dma_state",
+     "name": "model_coverage",
      "type": "code",
      "required": true,
-     "code_list": "dma_state",
-     "description": "How far the model covers the DMA (model on the model row)"
+     "code_list": "model_coverage",
+     "description": "How far the model covers the DMA (model on the model row); not PLDR's dma_state"
     },
     {
      "name": "gis_pipes",
      "type": "int",
      "required": false,
-     "description": "GIS pipes in the DMA in the project's GIS (model row: every GIS pipe in the project)"
+     "description": "GIS pipes in the DMA in the project's GIS (model row: kept DMA rows + linked GIS mains with no DMA)"
     },
     {
      "name": "linked_pipes",
@@ -149,7 +149,7 @@
      "type": "number",
      "required": false,
      "units": "m",
-     "description": "GIS pipe length in the DMA"
+     "description": "GIS pipe length in the DMA (model row: as gis_pipes)"
     },
     {
      "name": "modelled_length_m",
@@ -169,7 +169,7 @@
      "name": "trace_status",
      "type": "text",
      "required": false,
-     "description": "The PLDR trace readiness state as the build recorded it (pass, pass_multi_inlet, warning, blocked, no_customers); blank = not evaluated"
+     "description": "PLDR trace readiness tier as the build recorded it (dma_trace_readiness.trace_status: pass, pass_multi_inlet, warning, blocked, no_customers); blank = not evaluated"
     },
     {
      "name": "trace_coverage_pct",
@@ -194,7 +194,7 @@
      "name": "spatial_rejected",
      "type": "int",
      "required": false,
-     "description": "Spatial (geometry) links the build refused (model row: all of them)"
+     "description": "Spatial (geometry) links the build refused (model row: kept DMA rows + no DMA)"
     },
     {
      "name": "linked_mains_no_dma",
@@ -207,15 +207,24 @@
      "type": "code",
      "required": true,
      "code_list": "health_risk",
-     "description": "The one generic risk: the highest default_risk of risk_reasons; not_assessed when the DMA is not modelled; none when there are no reasons"
+     "description": "The one generic risk: the highest default_risk of risk_reasons; none when there are no reasons"
     },
     {
      "name": "risk_reasons",
      "type": "list",
      "required": false,
-     "description": "The health_fact codes found for the row (';' separated); blank = none"
+     "description": "The health_fact codes found for the row (';' separated); blank = none; readers accept unknown codes"
     }
    ]
   }
- }
+ },
+ "rows_rule": "DMA rows = the DMAs PLDR ranks (at least one GIS pipe linked to the model, PLDR pldr_dma_scope.ranking_dmas kept) plus DMAs the build linkage gate puts inside the model extent with no pipe linked (in_extent_not_linked). PLDR leaves every DMA with no pipe linked out of its ranking as not_modelled; health splits PLDR's not-ranked DMAs into in_extent_not_linked (row kept, high) and left out (clip-only: only in the clipped GIS; no row, counted in projects[].left_out_dmas = PLDR's ranking left_out less the in-extent ones). Builds with no linkage gate: every DMA with no pipe linked is left out (as the PLDR ranking does). DMAs are grouped on the trimmed dma_ref (PLDR groups on the raw value then trims: the same unless two refs differ only by spaces). The model row: model-wide facts only, permanently; its GIS counts, lengths and spatial rejects are over the kept DMA rows plus the linked GIS mains with no DMA (one rule for all of them).",
+ "reader_rules": [
+  "Read by header name; ignore columns you do not know (later minor versions append columns after risk_reasons).",
+  "Accept health_fact codes you do not know (show the code as is; its risk is already in risk_level).",
+  "A row applies to a build only when project_id and project_version match the live PLDR version; otherwise show 'no health check for this build'.",
+  "When gis_set differs from build_gis_set show 'built on an older GIS; change not assessed until v1'.",
+  "No set, or no row for the model: 'no health check available'. Warning only: never refuse, score or plan on it.",
+  "v1 key rule: start and change merge into one row per (model_name, gis_set, dma_ref); basis = the row's latest basis. v1 may add a separate worst_dma_risk column on the model row; the model row's own risk stays model-wide facts."
+ ]
 }

@@ -1,8 +1,8 @@
 {
- "code_list": "dma_state",
+ "code_list": "model_coverage",
  "version": "1.0.0",
  "status": "draft for James's sign-off",
- "description": "How far a model covers a DMA (wanda_health_v1), from the GIS pipes linked to the model.",
+ "description": "How far a model covers a DMA (wanda_health_v1), from the GIS pipes linked to the model. Not PLDR's dma_state (scored / partial / not_yet_scored), which is about scoring. DMAs only in the clipped GIS (no pipe linked, outside the model extent) get no row, as the PLDR ranking leaves them out.",
  "codes": [
   {
    "code": "modelled",
@@ -17,11 +17,6 @@
   {
    "code": "in_extent_not_linked",
    "label": "Inside the model extent, no pipe linked",
-   "synonyms": []
-  },
-  {
-   "code": "not_modelled",
-   "label": "Not modelled (only in the clipped GIS, no pipe linked)",
    "synonyms": []
   },
   {

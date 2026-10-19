@@ -163,23 +163,42 @@ only by `wanda_import health` into `derived\health\<YYYY-MM-DD>_health\` (regist
 
 v0 (basis `start`) = the build-time model-vs-GIS compare each live PLDR project already holds: GIS pipes linked per
 DMA (= the regional ranking model coverage), modelled length, trace readiness, model pipes linked, spatial links
-refused, linked mains with no DMA. Code lists: `health_basis` (start, change), `health_risk` (none, low, medium, high,
-not_assessed; attribute rank), `dma_state` (modelled, partly_modelled, in_extent_not_linked, not_modelled, model),
-`health_fact` (v0 codes only; attributes basis, asset_family, default_risk).
+refused, linked mains with no DMA. Code lists: `health_basis` (start, change), `health_risk` (none, low, medium, high;
+attribute rank), `model_coverage` (modelled, partly_modelled, in_extent_not_linked, model; not PLDR's `dma_state`
+scored / partial / not_yet_scored), `health_fact` (v0 codes only; attributes basis, asset_family, default_risk).
+
+Rows (schema `rows_rule`): one row per DMA PLDR ranks (at least one GIS pipe linked) plus each DMA the build linkage
+gate puts inside the model extent with no pipe linked (`in_extent_not_linked`). PLDR leaves every DMA with no pipe
+linked out of its ranking as not_modelled; health splits those: in extent = a row (high), clip-only (only in the
+clipped GIS) = no row, counted in `projects[].left_out_dmas` (PLDR's ranking left_out less the in-extent ones). Builds with no gate:
+every DMA with no pipe linked is left out, as the ranking does. DMAs are grouped on the trimmed dma_ref (PLDR groups
+on the raw value then trims: the same unless two refs differ only by spaces). The model row (blank dma_ref) carries
+model-wide facts only, permanently; its GIS counts, lengths and spatial rejects are over the kept DMA rows plus the
+linked GIS mains with no DMA (one rule). A project that cannot be read is recorded `skipped: <why>` in projects[];
+every project skipped = refused, nothing written. One set a day, fixed name `<date>_health`.
 
 | health_fact (v0) | default_risk | Raised when |
 |---|---|---|
-| dma_not_modelled | not_assessed | no GIS pipe of the DMA linked, DMA not inside the model extent |
 | dma_in_extent_not_linked | high | no pipe linked, DMA inside the model extent (build linkage gate) |
 | dma_partly_modelled | medium | 50 % or less of the DMA's GIS pipes linked (at least one) |
-| trace_blocked / trace_warning | high / medium | build trace readiness blocked / warning, in a DMA with at least one pipe linked (PLDR also traces clip-only DMAs: not a model fact) |
+| trace_blocked / trace_warning | high / medium | build trace readiness blocked / warning, in a DMA with at least one pipe linked (PLDR also traces unlinked DMAs: not a model fact) |
 | gis_pipes_not_linked | low | a modelled DMA below 95 % linked |
 | spatial_link_rejected | low | the build refused spatial links in the DMA (no DMA: model row) |
 | model_pipes_not_linked | low | model row: a model pipe links to no GIS pipe |
 | linked_main_no_dma | low | model row: a linked GIS main has no DMA |
 
-Risk rules `v0-D6`: risk = highest default_risk of the row's facts; a not modelled DMA = not_assessed; no facts =
-none. v1 adds the GIS change log (basis change: change facts, `gis_changes`, change columns, model row = worst DMA).
+Risk rules `v0-D6`: risk = highest default_risk of the row's facts; no facts = none.
+
+Reader rules (schema `reader_rules`):
+- read by header name and ignore unknown columns (v1 columns are appended after risk_reasons); accept unknown
+  health_fact codes;
+- a row applies only when project_id + project_version match the live PLDR version, else "no health check for this
+  build"; when gis_set differs from build_gis_set, "built on an older GIS; change not assessed until v1";
+- no set / no row: "no health check available"; warning only, never refuse, score or plan on it.
+
+v1 adds the GIS change log (basis change: change facts, `gis_changes`, change columns). Key rule for v1: start and
+change merge into one row per (model_name, gis_set, dma_ref) with basis = the row's latest basis. v1 may add a
+separate `worst_dma_risk` column on the model row; the model row's own risk stays model-wide facts.
 
 ## Open points for James
 
