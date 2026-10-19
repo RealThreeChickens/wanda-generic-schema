@@ -187,7 +187,6 @@ every project skipped = refused, nothing written. One set a day, fixed name `<da
 | model_pipes_not_linked | low | model row: a model pipe links to no GIS pipe |
 | linked_main_no_dma | low | model row: a linked GIS main has no DMA |
 | valve_shut_in_gis_open_in_model | high | a GIS isolation valve shut in the GIS carries model flow at 24:00 (the model has it open, for certain) |
-| valve_open_in_gis_no_flow_in_model | low | a GIS isolation valve open in the GIS carries no model flow at 24:00 (shut or idle in the model) |
 
 Risk rules `v0-D6`: risk = highest default_risk of the row's facts; no facts = none.
 
@@ -198,9 +197,15 @@ position C / CLOSED (trimmed, any case, as PLDR's derived risk), open = everythi
 = the model valve FLOW at 24:00 in `model_results\baseline\FacilityTopology_Flow.csv` (or
 `facility_topology_flow.csv`), rows TYPE Valves, NAME = trimmed valve_ref; flows when abs(FacilityFlow) >=
 `risk_rules.model_flow_min_ls` (1e-6). The evidence is flow, not the model valve setting (PLDR holds no setting):
-GIS shut + flow proves the model open (high, GIS is gold); GIS open + no flow may be shut or simply idle (low).
-`valves_not_in_model` is a column only (no fact). No baseline CSV: the three model columns are blank and
-`sources.facility_topology_flow` is false; no gis_valves table: all five blank. Model row = kept DMA rows +
+GIS shut + flow proves the model open (high, GIS is gold); GIS open + no flow may be shut or simply idle:
+`valves_open_model_no_flow` is a column only in v0 (no fact; on real data most were dead-end or idle valves), back
+as a fact when a real model valve setting exists (v1).
+`valves_not_in_model` is a column only (no fact). Health reads PLDR's 24:00 snapshot (the production baseline
+rule), not the time-varying trace's all-day closed rule. No baseline CSV: the three model columns are blank and
+`sources.facility_topology_flow` is false (also for an unreadable CSV); no gis_valves table: all five blank.
+projects[] records `model_valves` (distinct model valve NAMEs) and `model_valves_named_in_gis` (of those, names equal
+to a GIS valve_ref); when no model valve is named in the GIS (e.g. Synergi node-pair names) the three model columns
+are blank and no valve fact is raised, as with no CSV: blank = not checked, never 0. Model row = kept DMA rows +
 isolation valves with no DMA; it raises a valve fact only for the valves with no DMA. Medium ("GIS open, model
 shut") needs a real model setting source (later).
 
@@ -209,6 +214,9 @@ Reader rules (schema `reader_rules`):
   health_fact codes;
 - a row applies only when project_id + project_version match the live PLDR version, else "no health check for this
   build"; when gis_set differs from build_gis_set, "built on an older GIS; change not assessed until v1";
+- model row valve counts include the DMA rows' valves; valve facts on the model row only for valves with no DMA;
+- valve evidence = PLDR's 24:00 snapshot (production baseline rule), not the time-varying all-day closed rule; blank
+  model valve columns = not checked;
 - no set / no row: "no health check available"; warning only, never refuse, score or plan on it.
 
 v1 adds the GIS change log (basis change: change facts, `gis_changes`, change columns). Key rule for v1: start and

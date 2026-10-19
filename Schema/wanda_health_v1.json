@@ -28,7 +28,7 @@
    "reason": "why refused (blank when complete)",
    "risk_rules": "the risk_rules block below as used",
    "gis_set": "the GIS set checked against",
-   "projects": "[{model_name, model_name_ok (wanda_names rule; false = name fails the rule), project_id, project_version, folder_rel, gis_set, models_set, built_at, status (ok | skipped: <why>), left_out_dmas (count), left_out_dma_refs, sources: {source: found true / false; incl. gis_valves and facility_topology_flow}}]"
+   "projects": "[{model_name, model_name_ok (wanda_names rule; false = name fails the rule), project_id, project_version, folder_rel, gis_set, models_set, built_at, status (ok | skipped: <why>), left_out_dmas (count), left_out_dma_refs, model_valves (distinct TYPE Valves NAMEs in the baseline topology CSV; null = no usable CSV), model_valves_named_in_gis (of those, NAMEs equal to a trimmed gis_valves valve_ref; null = no CSV or no gis_valves; 0 = model valves not named as GIS valves, so the three model valve columns are blank), sources: {source: found true / false; incl. gis_valves and facility_topology_flow}}]"
   }
  },
  "built_from": {
@@ -219,19 +219,19 @@
      "name": "valves_not_in_model",
      "type": "int",
      "required": false,
-     "description": "Of the DMA's GIS isolation valves, those with no Valves row of the same name (trimmed valve_ref) in the model baseline FacilityTopology_Flow.csv; column only in v0 (no fact); blank = no baseline CSV"
+     "description": "Of the DMA's GIS isolation valves, those with no Valves row of the same name (trimmed valve_ref) in the model baseline FacilityTopology_Flow.csv; column only in v0 (no fact); blank = no usable baseline CSV, or no model valve named as a GIS valve (projects[].model_valves_named_in_gis = 0)"
     },
     {
      "name": "valves_shut_model_flows",
      "type": "int",
      "required": false,
-     "description": "GIS isolation valves shut in the GIS whose model valve carries flow at 24:00 (abs FacilityFlow >= risk_rules.model_flow_min_ls): open in the model for certain; blank = no baseline CSV"
+     "description": "GIS isolation valves shut in the GIS whose model valve carries flow at 24:00 (abs FacilityFlow >= risk_rules.model_flow_min_ls): open in the model for certain; blank = as valves_not_in_model"
     },
     {
      "name": "valves_open_model_no_flow",
      "type": "int",
      "required": false,
-     "description": "GIS isolation valves open in the GIS whose model valve carries no flow at 24:00 (shut in the model, or open and idle: no flow is not proof of shut); blank = no baseline CSV"
+     "description": "GIS isolation valves open in the GIS whose model valve carries no flow at 24:00 (shut in the model, or open and idle: no flow is not proof of shut); column only in v0 (no fact) until a real model valve setting exists (v1); blank = as valves_not_in_model"
     },
     {
      "name": "risk_level",
@@ -249,12 +249,14 @@
    ]
   }
  },
- "rows_rule": "DMA rows = the DMAs PLDR ranks (at least one GIS pipe linked to the model, PLDR pldr_dma_scope.ranking_dmas kept) plus DMAs the build linkage gate puts inside the model extent with no pipe linked (in_extent_not_linked). PLDR leaves every DMA with no pipe linked out of its ranking as not_modelled; health splits PLDR's not-ranked DMAs into in_extent_not_linked (row kept, high) and left out (clip-only: only in the clipped GIS; no row, counted in projects[].left_out_dmas = PLDR's ranking left_out less the in-extent ones). Builds with no linkage gate: every DMA with no pipe linked is left out (as the PLDR ranking does). DMAs are grouped on the trimmed dma_ref (PLDR groups on the raw value then trims: the same unless two refs differ only by spaces). The model row: model-wide facts only, permanently; its GIS counts, lengths and spatial rejects are over the kept DMA rows plus the linked GIS mains with no DMA (one rule for all of them). Valve counts follow the same rule: kept DMA rows plus GIS isolation valves with no DMA; the model row raises a valve fact only for the valves with no DMA (the DMA rows carry their own). Valve evidence (v0) is the model valve FLOW at 24:00 in the project's model_results\\baseline\\FacilityTopology_Flow.csv (or facility_topology_flow.csv), not the model valve setting, which PLDR does not hold: GIS shut + flow proves the model open; GIS open + no flow may be shut or idle.",
+ "rows_rule": "DMA rows = the DMAs PLDR ranks (at least one GIS pipe linked to the model, PLDR pldr_dma_scope.ranking_dmas kept) plus DMAs the build linkage gate puts inside the model extent with no pipe linked (in_extent_not_linked). PLDR leaves every DMA with no pipe linked out of its ranking as not_modelled; health splits PLDR's not-ranked DMAs into in_extent_not_linked (row kept, high) and left out (clip-only: only in the clipped GIS; no row, counted in projects[].left_out_dmas = PLDR's ranking left_out less the in-extent ones). Builds with no linkage gate: every DMA with no pipe linked is left out (as the PLDR ranking does). DMAs are grouped on the trimmed dma_ref (PLDR groups on the raw value then trims: the same unless two refs differ only by spaces). The model row: model-wide facts only, permanently; its GIS counts, lengths and spatial rejects are over the kept DMA rows plus the linked GIS mains with no DMA (one rule for all of them). Valve counts follow the same rule: kept DMA rows plus GIS isolation valves with no DMA; the model row raises a valve fact only for the valves with no DMA (the DMA rows carry their own). Valve evidence (v0) is the model valve FLOW at 24:00 in the project's model_results\\baseline\\FacilityTopology_Flow.csv (or facility_topology_flow.csv), not the model valve setting, which PLDR does not hold: GIS shut + flow proves the model open (fact, high); GIS open + no flow may be shut or idle (column only in v0, no fact). Health reads PLDR's 24:00 snapshot (the production baseline rule), not the time-varying trace's all-day closed rule. A usable CSV whose model valve names match no GIS valve_ref (e.g. Synergi node-pair names) leaves the three model valve columns blank and raises no valve fact, as a missing CSV does.",
  "reader_rules": [
   "Read by header name; ignore columns you do not know (later minor versions append columns after risk_reasons).",
   "Accept health_fact codes you do not know (show the code as is; its risk is already in risk_level).",
   "A row applies to a build only when project_id and project_version match the live PLDR version; otherwise show 'no health check for this build'.",
   "When gis_set differs from build_gis_set show 'built on an older GIS; change not assessed until v1'.",
+  "Valve counts on the model row include the DMA rows' valves (kept DMA rows + isolation valves with no DMA); valve facts on the model row are only for the valves with no DMA (each DMA row carries its own).",
+  "Valve evidence is the model valve flow in PLDR's 24:00 snapshot (the production baseline rule), not the time-varying trace's all-day closed rule; blank model valve columns = not checked (no usable CSV, or model valves not named as GIS valves), never 0.",
   "No set, or no row for the model: 'no health check available'. Warning only: never refuse, score or plan on it.",
   "v1 key rule: start and change merge into one row per (model_name, gis_set, dma_ref); basis = the row's latest basis. v1 may add a separate worst_dma_risk column on the model row; the model row's own risk stays model-wide facts."
  ]

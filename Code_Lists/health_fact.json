@@ -80,14 +80,6 @@
    "basis": "start",
    "asset_family": "valve",
    "default_risk": "high"
-  },
-  {
-   "code": "valve_open_in_gis_no_flow_in_model",
-   "label": "Isolation valve open in the GIS carries no flow in the model at 24:00 (shut or idle in the model)",
-   "synonyms": [],
-   "basis": "start",
-   "asset_family": "valve",
-   "default_risk": "low"
   }
  ]
 }
