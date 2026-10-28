@@ -106,8 +106,8 @@
     {
      "name": "checked_at",
      "type": "datetime",
-     "required": true,
-     "description": "When this model was checked (a model carried from the previous set keeps its own)"
+     "required": false,
+     "description": "When this model was checked (a model carried from the previous set keeps its own; blank = not checked yet)"
     },
     {
      "name": "status",
