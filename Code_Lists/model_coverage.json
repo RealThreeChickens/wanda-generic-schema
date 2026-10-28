@@ -1,0 +1,18 @@
+{
+ "code_list": "model_coverage",
+ "version": "1.0.0",
+ "status": "draft for James's sign-off",
+ "description": "How far a model covers a GIS DMA (wanda_health_v1 dma_health.coverage), by in-network GIS pipe length named in the model (FID or FID_n). A row exists from one GIS pipe of the DMA in the model.",
+ "codes": [
+  {
+   "code": "modelled",
+   "label": "Modelled: 50 % or more of the DMA's in-network GIS length is in the model",
+   "synonyms": []
+  },
+  {
+   "code": "edge",
+   "label": "Edge: under 50 % in the model (facts only, never flagged)",
+   "synonyms": []
+  }
+ ]
+}

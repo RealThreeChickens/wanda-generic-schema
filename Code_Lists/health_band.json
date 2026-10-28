@@ -1,0 +1,7 @@
+{
+ "code_list": "health_band",
+ "version": "1.0.0",
+ "status": "draft for James's sign-off",
+ "description": "PLACEHOLDER: DMA suitability bands (suitable / plan with warning / plan with issues / no plan suitable) are set later from the full set of results (James 28/10). 1.0 writes dma_health.band blank; no codes yet.",
+ "codes": []
+}

@@ -1,0 +1,371 @@
+{
+ "schema": "wanda_health_v1",
+ "version": "1.0.0",
+ "status": "draft for James's sign-off",
+ "description": "WANDa health check 1.0: stand-alone intake gate run on a delivery as received (after the converter, before any app import). Models in the newest models set vs the newest WANDa GIS set (wanda_network_v1): names, pipe coverage and isolation valve settings only - no PLDR, trace or flow. Proposes a per-model intake outcome for a WRc engineer to review; facts and FID lists for the PLDR map module later. Written only by wanda_import health.",
+ "container": {
+  "format": "csv",
+  "encoding": "utf-8",
+  "delimiter": ",",
+  "header": true,
+  "set_name": "derived\\health\\<YYYY-MM-DD>_health (one set a day; a same-day rerun supersedes)",
+  "files": {
+   "model_health": "model_health.csv",
+   "dma_health": "dma_health.csv",
+   "dma_items": "dma_items.csv"
+  },
+  "set_record": "wanda_health.json",
+  "built_from": "built_from.json",
+  "report": "Intake_Health_<YYYY-MM-DD>.xlsx"
+ },
+ "set_record": {
+  "file": "wanda_health.json",
+  "fields": {
+   "schema": "wanda_health_v1",
+   "version": "the schema version",
+   "trigger": "new_gis | new_model",
+   "client_id": "the region folder marker client_id",
+   "created_at": "ISO 8601 datetime",
+   "built_with": "tool + commit + dirty + standard (wanda_import built_with)",
+   "status": "complete",
+   "gis_set": "GIS set checked against",
+   "models_set": "newest models set",
+   "prev_set": "previous health set compared / carried from (null = none)",
+   "flag_rules": "the rules as used (see flag_rules)",
+   "gis": "GIS counts: pipes, DMA pipes, real DMAs, isolation valves, blank dma_ref valves placed by polygon / not placed",
+   "models": "[{model_name, file, size, mtime, name_ok (wanda_names rule), status, checked_at, carried (true = rows copied from prev_set)}]"
+  }
+ },
+ "built_from": {
+  "file": "built_from.json",
+  "fields": {
+   "gis": "gis set name",
+   "models": "models set name (wanda_client check reports STALE on a newer one of either)"
+  }
+ },
+ "flag_rules": {
+  "_note": "defaults in wanda_import health.py, recorded per set; tune from WI / client runs",
+  "names_checked_min_pct": "model pipe names that are GIS FIDs below this % -> names_checked no (50)",
+  "modelled_min_length_pct": "coverage modelled at or above this % of in-network DMA length (50)",
+  "missing_length_max_pct": "gis_pipes_missing when missing_length_m is over this % of gis_length_m (5)",
+  "valve_shut_below": "model InitialPosition below this = shut (0.01; 0..1 scale)",
+  "isolation_equation": "model valve equation compared (VL)",
+  "needs_new_model_share": "null = off: the tool never proposes needs_new_model (pending James)"
+ },
+ "rules": [
+  "GIS: in network = status code attribute in_network (blank = in network); isolation valve = valve_type attribute isolates (blank = isolates); shut = normal_position closed, open = open, throttled / unknown / blank = not compared; real DMA = dma_areas area_type attribute is_dma.",
+  "A valve with a blank dma_ref is placed in the DMA polygon holding its point (shapely); outside every DMA = not counted.",
+  "A DMA row exists from one in-network GIS pipe of the DMA in the model. Edge DMAs get facts, never the flag.",
+  "names_checked no: only the model row (pipe / valve counts); no DMA rows; proposed engineer_review.",
+  "new_gis: every model of the newest models set checked; new_model: the named models checked, every other model's rows carried from prev_set (each keeps checked_at).",
+  "change compares a checked model's rows with prev_set by model_name + dma_ref; carried rows are copied as they were.",
+  "dma_items lists FIDs for modelled DMAs only (valves differing, pipes missing).",
+  "Only FIDs, DMA refs and model names are written; customer counts / extra never read; GIS is never changed."
+ ],
+ "types": {
+  "ref": "text exactly as recorded",
+  "text": "text",
+  "code": "a code from the field's code list",
+  "datetime": "ISO 8601",
+  "number": "decimal, '.'",
+  "int": "whole number",
+  "list": "several values separated by ';'"
+ },
+ "reader_rules": [
+  "read by header name, ignore unknown columns (later columns are appended)",
+  "blank = not checked, never 0",
+  "warning only: never refuse, score or plan on it"
+ ],
+ "kinds": {
+  "model_health": {
+   "description": "One row per model (checked or carried).",
+   "unique": [
+    [
+     "model_name"
+    ]
+   ],
+   "fields": [
+    {
+     "name": "model_name",
+     "type": "ref",
+     "required": true,
+     "description": "Model name = the .mdb file stem in the models set (names are the control)"
+    },
+    {
+     "name": "models_set",
+     "type": "ref",
+     "required": true,
+     "description": "The models set the model was read from"
+    },
+    {
+     "name": "gis_set",
+     "type": "ref",
+     "required": true,
+     "description": "The GIS set the model was checked against"
+    },
+    {
+     "name": "checked_at",
+     "type": "datetime",
+     "required": true,
+     "description": "When this model was checked (a model carried from the previous set keeps its own)"
+    },
+    {
+     "name": "status",
+     "type": "text",
+     "required": true,
+     "description": "ok | skipped: <reason> (unreadable model; not checked yet)"
+    },
+    {
+     "name": "names_checked",
+     "type": "text",
+     "required": false,
+     "description": "yes = at least names_checked_min_pct of the model pipe names are GIS pipe FIDs (FID_n counts); no = not checked (DMA facts blank, no DMA rows); blank = skipped"
+    },
+    {
+     "name": "model_pipes",
+     "type": "int",
+     "required": false,
+     "description": "Model pipe names read (ElementNameIdMap x WaterPipe)"
+    },
+    {
+     "name": "model_pipes_in_gis",
+     "type": "int",
+     "required": false,
+     "description": "Of those, names that are a GIS pipe_ref, or FID_n of one (not refused by the element description)"
+    },
+    {
+     "name": "model_valves",
+     "type": "int",
+     "required": false,
+     "description": "Model isolation valves (equation VL)"
+    },
+    {
+     "name": "model_valves_in_gis",
+     "type": "int",
+     "required": false,
+     "description": "Of those, names that are a GIS valve_ref"
+    },
+    {
+     "name": "dmas_modelled",
+     "type": "int",
+     "required": false,
+     "description": "DMA rows with coverage modelled"
+    },
+    {
+     "name": "dmas_edge",
+     "type": "int",
+     "required": false,
+     "description": "DMA rows with coverage edge"
+    },
+    {
+     "name": "dmas_flagged",
+     "type": "int",
+     "required": false,
+     "description": "Modelled DMA rows with config_differs = yes"
+    },
+    {
+     "name": "proposed_outcome",
+     "type": "code",
+     "required": true,
+     "code_list": "health_outcome",
+     "description": "Proposed intake outcome (the tool proposes, the engineer decides)"
+    },
+    {
+     "name": "outcome_reasons",
+     "type": "list",
+     "required": false,
+     "description": "Why (plain text, ';' separated)"
+    }
+   ]
+  },
+  "dma_health": {
+   "description": "One row per model + GIS DMA in the model.",
+   "unique": [
+    [
+     "model_name",
+     "dma_ref"
+    ]
+   ],
+   "fields": [
+    {
+     "name": "model_name",
+     "type": "ref",
+     "required": true,
+     "description": "Model name (model_health.model_name)"
+    },
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": true,
+     "description": "GIS DMA reference (dma_areas, area_type is_dma)"
+    },
+    {
+     "name": "coverage",
+     "type": "code",
+     "required": false,
+     "code_list": "model_coverage",
+     "description": "modelled / edge (blank on a gone row)"
+    },
+    {
+     "name": "gis_pipes",
+     "type": "int",
+     "required": false,
+     "description": "In-network GIS pipes in the DMA"
+    },
+    {
+     "name": "gis_length_m",
+     "type": "number",
+     "required": false,
+     "description": "Their length (m)"
+    },
+    {
+     "name": "gis_pipes_in_model",
+     "type": "int",
+     "required": false,
+     "description": "Of those, named in the model (FID or FID_n)"
+    },
+    {
+     "name": "length_in_model_pct",
+     "type": "number",
+     "required": false,
+     "description": "Share of gis_length_m in the model (%; by pipe count when the GIS holds no lengths)"
+    },
+    {
+     "name": "missing_pipes",
+     "type": "int",
+     "required": false,
+     "description": "In-network GIS pipes of the DMA not in the model"
+    },
+    {
+     "name": "missing_length_m",
+     "type": "number",
+     "required": false,
+     "description": "Their length (m)"
+    },
+    {
+     "name": "valves_gis_shut",
+     "type": "int",
+     "required": false,
+     "description": "In-network GIS isolation valves in the DMA shut in the GIS (normal_position closed)"
+    },
+    {
+     "name": "valves_gis_open",
+     "type": "int",
+     "required": false,
+     "description": "... open in the GIS (normal_position open)"
+    },
+    {
+     "name": "valves_in_model",
+     "type": "int",
+     "required": false,
+     "description": "GIS isolation valves of the DMA named as a model isolation valve (VL)"
+    },
+    {
+     "name": "valves_differ",
+     "type": "int",
+     "required": false,
+     "description": "Of those, a definite disagreement: GIS closed + model InitialPosition >= 0.01, or GIS open + model < 0.01"
+    },
+    {
+     "name": "valves_not_compared",
+     "type": "int",
+     "required": false,
+     "description": "Of those, not compared: GIS throttled / unknown / blank, or model setting NULL"
+    },
+    {
+     "name": "config_differs",
+     "type": "text",
+     "required": false,
+     "description": "The one 1.0 flag 'DMA configuration differs from GIS': yes / no; blank = not checked (edge DMA, gone row)"
+    },
+    {
+     "name": "flag_reasons",
+     "type": "list",
+     "required": false,
+     "description": "valve_state_differs; gis_pipes_missing (missing_length_m over flag_rules.missing_length_max_pct of gis_length_m)"
+    },
+    {
+     "name": "band",
+     "type": "code",
+     "required": false,
+     "code_list": "health_band",
+     "description": "BLANK in 1.0: the place for the DMA suitability bands set later"
+    },
+    {
+     "name": "prev_set",
+     "type": "ref",
+     "required": false,
+     "description": "The previous health set this row was compared with (blank = none)"
+    },
+    {
+     "name": "change",
+     "type": "code",
+     "required": false,
+     "code_list": "health_change",
+     "description": "Against prev_set: new / same / changed / gone"
+    },
+    {
+     "name": "changed_fields",
+     "type": "list",
+     "required": false,
+     "description": "Fields that changed (change = changed)"
+    }
+   ]
+  },
+  "dma_items": {
+   "description": "One row per GIS element behind a modelled DMA's facts (for the PLDR map module).",
+   "unique": [
+    [
+     "model_name",
+     "dma_ref",
+     "item",
+     "fid"
+    ]
+   ],
+   "fields": [
+    {
+     "name": "model_name",
+     "type": "ref",
+     "required": true,
+     "description": "Model name"
+    },
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": true,
+     "description": "GIS DMA reference"
+    },
+    {
+     "name": "item",
+     "type": "text",
+     "required": true,
+     "description": "What GIS element the row is about: valve / pipe (later module rules pick items by element)"
+    },
+    {
+     "name": "fid",
+     "type": "ref",
+     "required": true,
+     "description": "The GIS FID (valve_ref / pipe_ref)"
+    },
+    {
+     "name": "issue",
+     "type": "text",
+     "required": true,
+     "description": "gis_shut_model_open / gis_open_model_shut (valve) / missing_from_model (pipe)"
+    },
+    {
+     "name": "gis_value",
+     "type": "text",
+     "required": false,
+     "description": "valve: GIS normal_position; pipe: GIS length_m"
+    },
+    {
+     "name": "model_value",
+     "type": "text",
+     "required": false,
+     "description": "valve: model InitialPosition; pipe: blank"
+    }
+   ]
+  }
+ }
+}

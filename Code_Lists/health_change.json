@@ -1,0 +1,28 @@
+{
+ "code_list": "health_change",
+ "version": "1.0.0",
+ "status": "draft for James's sign-off",
+ "description": "Row change against the previous health set (wanda_health_v1 dma_health.change), by key model_name + dma_ref.",
+ "codes": [
+  {
+   "code": "new",
+   "label": "New: no row for this model + DMA in the previous set",
+   "synonyms": []
+  },
+  {
+   "code": "same",
+   "label": "Same: every compared field equal",
+   "synonyms": []
+  },
+  {
+   "code": "changed",
+   "label": "Changed: the fields in changed_fields differ",
+   "synonyms": []
+  },
+  {
+   "code": "gone",
+   "label": "Gone: in the previous set, not in this check (facts blank)",
+   "synonyms": []
+  }
+ ]
+}

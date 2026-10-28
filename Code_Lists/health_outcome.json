@@ -1,0 +1,35 @@
+{
+ "code_list": "health_outcome",
+ "version": "1.0.0",
+ "status": "draft for James's sign-off",
+ "description": "Proposed intake outcome per model (wanda_health_v1 model_health.proposed_outcome). The tool proposes; a WRc engineer reviews and decides before anything goes to the client. 1.0 never proposes needs_new_model by itself (the engineer may choose it).",
+ "attributes": {
+  "proposed_by_tool": "the 1.0 tool may propose this code (false = engineer decision only)"
+ },
+ "codes": [
+  {
+   "code": "ok",
+   "label": "OK",
+   "synonyms": [],
+   "proposed_by_tool": true
+  },
+  {
+   "code": "ok_with_warnings",
+   "label": "OK with warnings (modelled DMAs whose configuration differs from GIS)",
+   "synonyms": [],
+   "proposed_by_tool": true
+  },
+  {
+   "code": "engineer_review",
+   "label": "Engineer review (model unreadable, or its names could not be checked against GIS)",
+   "synonyms": [],
+   "proposed_by_tool": true
+  },
+  {
+   "code": "needs_new_model",
+   "label": "Needs a new model (engineer decision only in 1.0)",
+   "synonyms": [],
+   "proposed_by_tool": false
+  }
+ ]
+}
