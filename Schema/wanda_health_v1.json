@@ -48,9 +48,10 @@
   "names_checked_min_pct": "model pipe names that are GIS FIDs below this % -> names_checked no (50)",
   "modelled_min_length_pct": "coverage modelled at or above this % of in-network DMA length (50)",
   "missing_length_max_pct": "gis_pipes_missing when missing_length_m is over this % of gis_length_m (5)",
-  "valve_shut_below": "model InitialPosition below this = shut (0.01; 0..1 scale)",
   "isolation_equation": "model valve equation compared (VL)",
-  "needs_new_model_share": "null = off: the tool never proposes needs_new_model (pending James)"
+  "needs_new_model_share": "null = off: the tool never proposes needs_new_model (pending James)",
+  "model_shut": "the model valve's ACTUAL state: OperationMode 0 = shut; otherwise (1 open, NULL check / TF valve) InitialPosition (tau, retained throttle) <= tau_shut_max = shut, else open; no control row or NULL InitialPosition (OperationMode not 0) = not compared",
+  "tau_shut_max": "1e-6"
  },
  "rules": [
   "GIS: in network = status code attribute in_network (blank = in network); isolation valve = valve_type attribute isolates (blank = isolates); shut = normal_position closed, open = open, throttled / unknown / blank = not compared; real DMA = dma_areas area_type attribute is_dma.",
@@ -264,13 +265,13 @@
      "name": "valves_differ",
      "type": "int",
      "required": false,
-     "description": "Of those, a definite disagreement: GIS closed + model InitialPosition >= 0.01, or GIS open + model < 0.01"
+     "description": "Of those, a definite disagreement between the GIS position (closed / open) and the model's actual state (flag_rules.model_shut)"
     },
     {
      "name": "valves_not_compared",
      "type": "int",
      "required": false,
-     "description": "Of those, not compared: GIS throttled / unknown / blank, or model setting NULL"
+     "description": "Of those, not compared: GIS throttled / unknown / blank, or no model state (no control row, NULL InitialPosition with OperationMode not 0)"
     },
     {
      "name": "config_differs",
@@ -363,7 +364,7 @@
      "name": "model_value",
      "type": "text",
      "required": false,
-     "description": "valve: model InitialPosition; pipe: blank"
+     "description": "valve: the model's OperationMode and InitialPosition; pipe: blank"
     }
    ]
   }
