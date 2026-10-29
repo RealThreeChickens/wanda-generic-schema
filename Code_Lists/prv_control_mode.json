@@ -1,0 +1,50 @@
+{
+ "code_list": "prv_control_mode",
+ "version": "1.0.0",
+ "description": "How a pressure reducing valve is controlled.",
+ "codes": [
+  {
+   "code": "fixed_outlet",
+   "label": "Fixed outlet pressure",
+   "synonyms": [
+    "fixed",
+    "fixed outlet",
+    "fixed outlet pressure"
+   ]
+  },
+  {
+   "code": "flow_modulated",
+   "label": "Flow modulated",
+   "synonyms": [
+    "flow modulated",
+    "flow modulation",
+    "flow modulating"
+   ]
+  },
+  {
+   "code": "time_profiled",
+   "label": "Time profiled",
+   "synonyms": [
+    "time profiled",
+    "time modulated",
+    "time based"
+   ]
+  },
+  {
+   "code": "cp_modulated",
+   "label": "Critical point modulated (closed loop)",
+   "synonyms": [
+    "cp modulated",
+    "critical point modulated",
+    "closed loop"
+   ]
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ]
+  }
+ ]
+}

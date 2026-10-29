@@ -1,0 +1,45 @@
+{
+ "code_list": "measure",
+ "version": "1.0.0",
+ "description": "What a telemetry series measures.",
+ "codes": [
+  {
+   "code": "flow",
+   "label": "Flow",
+   "synonyms": [
+    "flow",
+    "flow rate"
+   ]
+  },
+  {
+   "code": "volume",
+   "label": "Volume",
+   "synonyms": [
+    "volume",
+    "totaliser",
+    "totalizer"
+   ]
+  },
+  {
+   "code": "pressure",
+   "label": "Pressure",
+   "synonyms": [
+    "pressure"
+   ]
+  },
+  {
+   "code": "level",
+   "label": "Level",
+   "synonyms": [
+    "level"
+   ]
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ]
+  }
+ ]
+}

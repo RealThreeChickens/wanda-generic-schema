@@ -1,0 +1,58 @@
+{
+ "code_list": "value_source",
+ "version": "1.0.0",
+ "description": "Where a value in a *_source field came from. Written by the import, never mapped; apps read it to tell delivered values (gis) from values the import derived or inferred. Which codes a field may hold is in that field's `code_subset`.",
+ "codes": [
+  {
+   "code": "gis",
+   "label": "Delivered in the GIS",
+   "synonyms": [
+    "gis",
+    "delivered"
+   ]
+  },
+  {
+   "code": "derived_coincident",
+   "label": "Derived: shared with a coincident end / point (within 1 cm)",
+   "synonyms": [
+    "derived coincident"
+   ]
+  },
+  {
+   "code": "derived_own",
+   "label": "Derived: a new reference for an end with no other (c:<x>_<y>)",
+   "synonyms": [
+    "derived own"
+   ]
+  },
+  {
+   "code": "derived_connection",
+   "label": "Derived: from the connected network (the pipe or node the asset sits on)",
+   "synonyms": [
+    "derived connection"
+   ]
+  },
+  {
+   "code": "derived_boundary",
+   "label": "Derived: on a boundary, both areas held in dma_boundary_refs",
+   "synonyms": [
+    "derived boundary"
+   ]
+  },
+  {
+   "code": "derived_polygon",
+   "label": "Derived: from the area polygon the asset lies in",
+   "synonyms": [
+    "derived polygon"
+   ]
+  },
+  {
+   "code": "client_inferred",
+   "label": "Inferred from other delivered columns (a documented fallback)",
+   "synonyms": [
+    "client inferred",
+    "inferred"
+   ]
+  }
+ ]
+}

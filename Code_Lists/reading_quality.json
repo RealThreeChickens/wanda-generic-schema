@@ -1,0 +1,43 @@
+{
+ "code_list": "reading_quality",
+ "version": "1.0.0",
+ "description": "Quality flag of a telemetry reading as delivered. Blank = the delivery did not say.",
+ "codes": [
+  {
+   "code": "good",
+   "label": "Good",
+   "synonyms": [
+    "good",
+    "ok",
+    "valid"
+   ]
+  },
+  {
+   "code": "suspect",
+   "label": "Suspect",
+   "synonyms": [
+    "suspect",
+    "doubtful",
+    "uncertain"
+   ]
+  },
+  {
+   "code": "bad",
+   "label": "Bad",
+   "synonyms": [
+    "bad",
+    "invalid",
+    "fault"
+   ]
+  },
+  {
+   "code": "estimated",
+   "label": "Estimated / substituted",
+   "synonyms": [
+    "estimated",
+    "substituted",
+    "interpolated"
+   ]
+  }
+ ]
+}

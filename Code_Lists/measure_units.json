@@ -1,0 +1,190 @@
+{
+ "code_list": "measure_units",
+ "version": "1.0.0",
+ "description": "Telemetry measurement units. Each unit has its measure group and the factor to the WI unit of that group (value x factor = WI unit). WI units: flow l/s, volume m3, pressure m head, level m. A null factor = not convertible from the delivery alone (a percentage of full needs the asset's height). Codes are unique across the list, so the pressure and level metres are m_head and m_level.",
+ "attributes": {
+  "group": "the measure the unit belongs to (flow, volume, pressure, level; any for unknown)",
+  "factor": "multiply a delivered value by this to get the WI unit of the group (null = not convertible from the delivery alone)"
+ },
+ "codes": [
+  {
+   "code": "l_s",
+   "label": "litres per second",
+   "synonyms": [
+    "l/s",
+    "l s",
+    "lps",
+    "litres per second",
+    "litres/second"
+   ],
+   "group": "flow",
+   "factor": 1.0
+  },
+  {
+   "code": "m3_h",
+   "label": "cubic metres per hour",
+   "synonyms": [
+    "m3/h",
+    "m3/hr",
+    "m3 h",
+    "cubic metres per hour",
+    "cmh"
+   ],
+   "group": "flow",
+   "factor": 0.2777777777777778
+  },
+  {
+   "code": "ml_d",
+   "label": "megalitres per day",
+   "synonyms": [
+    "ml/d",
+    "mld",
+    "megalitres per day",
+    "megalitres/day"
+   ],
+   "group": "flow",
+   "factor": 11.574
+  },
+  {
+   "code": "m3_d",
+   "label": "cubic metres per day",
+   "synonyms": [
+    "m3/d",
+    "m3/day",
+    "cubic metres per day"
+   ],
+   "group": "flow",
+   "factor": 0.011574
+  },
+  {
+   "code": "l_min",
+   "label": "litres per minute",
+   "synonyms": [
+    "l/min",
+    "lpm",
+    "litres per minute"
+   ],
+   "group": "flow",
+   "factor": 0.016666666666666666
+  },
+  {
+   "code": "m3",
+   "label": "cubic metres",
+   "synonyms": [
+    "m3",
+    "cubic metres",
+    "cubic meters"
+   ],
+   "group": "volume",
+   "factor": 1.0
+  },
+  {
+   "code": "ml",
+   "label": "megalitres",
+   "synonyms": [
+    "ml",
+    "megalitre",
+    "megalitres",
+    "mega litres"
+   ],
+   "group": "volume",
+   "factor": 1000.0
+  },
+  {
+   "code": "l",
+   "label": "litres",
+   "synonyms": [
+    "l",
+    "litre",
+    "litres"
+   ],
+   "group": "volume",
+   "factor": 0.001
+  },
+  {
+   "code": "m_head",
+   "label": "metres head",
+   "synonyms": [
+    "m head",
+    "mh",
+    "metres head",
+    "metres of head"
+   ],
+   "group": "pressure",
+   "factor": 1.0
+  },
+  {
+   "code": "bar",
+   "label": "bar",
+   "synonyms": [
+    "bar",
+    "bars"
+   ],
+   "group": "pressure",
+   "factor": 10.197
+  },
+  {
+   "code": "mbar",
+   "label": "millibar",
+   "synonyms": [
+    "mbar",
+    "millibar",
+    "millibars"
+   ],
+   "group": "pressure",
+   "factor": 0.010197
+  },
+  {
+   "code": "kpa",
+   "label": "kilopascal",
+   "synonyms": [
+    "kpa",
+    "kilopascal",
+    "kilopascals"
+   ],
+   "group": "pressure",
+   "factor": 0.10197
+  },
+  {
+   "code": "psi",
+   "label": "pounds per square inch",
+   "synonyms": [
+    "psi"
+   ],
+   "group": "pressure",
+   "factor": 0.7031
+  },
+  {
+   "code": "m_level",
+   "label": "metres (level)",
+   "synonyms": [
+    "m",
+    "metres",
+    "meters"
+   ],
+   "group": "level",
+   "factor": 1.0
+  },
+  {
+   "code": "pct_full",
+   "label": "percent full",
+   "synonyms": [
+    "%",
+    "pct",
+    "percent",
+    "percent full"
+   ],
+   "group": "level",
+   "factor": null
+  },
+  {
+   "code": "unknown",
+   "label": "unknown unit",
+   "synonyms": [
+    "unknown"
+   ],
+   "group": "any",
+   "factor": null
+  }
+ ]
+}

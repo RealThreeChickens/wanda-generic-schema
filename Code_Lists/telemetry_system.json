@@ -1,0 +1,32 @@
+{
+ "code_list": "telemetry_system",
+ "version": "1.0.0",
+ "description": "The kind of system a logger / telemetry reference belongs to. Vendor brands are not WI codes (estate vocabulary only).",
+ "codes": [
+  {
+   "code": "scada",
+   "label": "SCADA / telemetry outstation tag",
+   "synonyms": [
+    "scada",
+    "telemetry",
+    "outstation"
+   ]
+  },
+  {
+   "code": "logger",
+   "label": "Data logger",
+   "synonyms": [
+    "logger",
+    "data logger",
+    "mobile logger"
+   ]
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ]
+  }
+ ]
+}

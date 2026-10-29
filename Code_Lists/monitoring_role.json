@@ -1,0 +1,56 @@
+{
+ "code_list": "monitoring_role",
+ "version": "1.0.0",
+ "description": "Why a point asset is a pressure / flow monitoring point. Blank = not a monitoring point.",
+ "codes": [
+  {
+   "code": "critical_point",
+   "label": "Critical point",
+   "synonyms": [
+    "critical point",
+    "critical pressure point",
+    "cp"
+   ]
+  },
+  {
+   "code": "low_level",
+   "label": "Low level point",
+   "synonyms": [
+    "low level",
+    "low level point",
+    "lowest point"
+   ]
+  },
+  {
+   "code": "dg2",
+   "label": "DG2 point (regulatory pressure reporting)",
+   "synonyms": [
+    "dg2",
+    "dg2 point"
+   ]
+  },
+  {
+   "code": "prv_inlet",
+   "label": "PRV inlet monitoring point",
+   "synonyms": [
+    "prv inlet",
+    "inlet pressure"
+   ]
+  },
+  {
+   "code": "prv_outlet",
+   "label": "PRV outlet monitoring point",
+   "synonyms": [
+    "prv outlet",
+    "outlet pressure"
+   ]
+  },
+  {
+   "code": "other",
+   "label": "Other monitoring point",
+   "synonyms": [
+    "other"
+   ]
+  }
+ ]
+}

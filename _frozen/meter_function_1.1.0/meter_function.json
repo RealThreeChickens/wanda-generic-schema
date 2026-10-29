@@ -1,0 +1,86 @@
+{
+ "code_list": "meter_function",
+ "version": "1.1.0",
+ "description": "WI meter function. network: a network (district / zone / bulk) meter the apps use (rule R6).",
+ "attributes": {
+  "network": "network meter used by the apps"
+ },
+ "codes": [
+  {
+   "code": "district",
+   "label": "District (DMA) meter",
+   "synonyms": [
+    "district",
+    "district meter",
+    "dma meter"
+   ],
+   "network": true
+  },
+  {
+   "code": "bulk",
+   "label": "Bulk meter",
+   "synonyms": [
+    "bulk",
+    "bulk meter",
+    "bulk supply meter"
+   ],
+   "network": true
+  },
+  {
+   "code": "reservoir",
+   "label": "Reservoir meter",
+   "synonyms": [
+    "reservoir",
+    "reservoir meter"
+   ],
+   "network": true
+  },
+  {
+   "code": "trunk",
+   "label": "Trunk meter",
+   "synonyms": [
+    "trunk",
+    "trunk meter"
+   ],
+   "network": true
+  },
+  {
+   "code": "supply",
+   "label": "Supply / zone meter",
+   "synonyms": [
+    "supply",
+    "zone meter",
+    "supply meter"
+   ],
+   "network": true
+  },
+  {
+   "code": "customer",
+   "label": "Customer (domestic) meter",
+   "synonyms": [
+    "customer",
+    "domestic",
+    "domestic meter"
+   ],
+   "network": false
+  },
+  {
+   "code": "commercial",
+   "label": "Commercial meter",
+   "synonyms": [
+    "commercial",
+    "non household",
+    "commercial meter"
+   ],
+   "network": false
+  },
+  {
+   "code": "other",
+   "label": "Other",
+   "synonyms": [
+    "other"
+   ],
+   "network": false
+  }
+ ]
+}
