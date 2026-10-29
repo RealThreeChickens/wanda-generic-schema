@@ -636,6 +636,12 @@
      "description": "GIS pipe_function"
     },
     {
+     "name": "main",
+     "type": "text",
+     "required": false,
+     "description": "yes = a main (pipe_function distribution / trunk / unknown: the set PLDR loads; the only pipes that count toward model coverage); no = not a main (communication / supply / service / raw ...): a GIS fact only, never a missing-pipe item; blank = model-only row"
+    },
+    {
      "name": "diameter",
      "type": "number",
      "required": false,
