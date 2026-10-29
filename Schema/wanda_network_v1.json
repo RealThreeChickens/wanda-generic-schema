@@ -1,7 +1,7 @@
 {
  "schema": "wanda_network_v1",
  "version": "1.3.0",
- "status": "v1.3.0 DRAFT (29/10/2026, additive: derivation provenance *_source fields, node / pipe / area links, meter size and function as delivered, monitoring_role, pipe ownership, restricted organisation, attribute tables meter_loggers and prv_settings) awaiting sign-off; v1.2.1 frozen in _frozen/network_1.2.1. v1.2.1 (16/10: text only - valid polygons, container.polygons) signed std-2026.10.16 (v1.2.0 frozen in _frozen/network_1.2.0); v1.2.0 signed std-2026.10.14 (v1.1.0 frozen in ..\\_frozen\\v1.1.0; 1.2 = James's standing rules 13/10: one import, all apps; accept all GIS; personal data never imported; uncertain classes flagged)",
+ "status": "v1.3.0 DRAFT (29/10/2026, additive: derivation provenance *_source fields, node / pipe / area links, meter size and function as delivered, monitoring_points layer, pipe ownership, restricted organisation, attribute tables meter_loggers and prv_settings) awaiting sign-off; v1.2.1 frozen in _frozen/network_1.2.1. v1.2.1 (16/10: text only - valid polygons, container.polygons) signed std-2026.10.16 (v1.2.0 frozen in _frozen/network_1.2.0); v1.2.0 signed std-2026.10.14 (v1.1.0 frozen in ..\\_frozen\\v1.1.0; 1.2 = James's standing rules 13/10: one import, all apps; accept all GIS; personal data never imported; uncertain classes flagged)",
  "description": "WANDa network GIS. One GeoPackage, one layer per kind (layer name = kind name), EPSG:27700, coordinates in metres. Layers are aligned to the PLDR project tables (app_table / app). The converter changes only layer names, field names and the delivery's own codes; values (coordinates, diameters, lengths, dates, refs) are as delivered. App behaviour comes from ONE rule per code attribute (rules), never from per-client tables. ONE IMPORT, ALL APPS (v1.2): every clean-water layer and field of a delivery comes in - assets of every status and function (abandoned / proposed kept with status, raw / non-potable and service pipes with pipe_function, customer meters with meter_function, other point assets in `assets`) and every source field with no WI field in the row's `extra` bag; the apps take what they need by the rules. Waste-water layers stay out. v1.3: where the delivery left a node ref, pipe ref or area ref blank the import fills it once and records the origin in the *_source field (value_source); the apps never re-derive.",
  "container": {
   "format": "gpkg",
@@ -40,7 +40,8 @@
   "Area refs on assets (dma_ref, wqz_ref ...) are the delivery's own; the import fills blank area refs once (dma_ref_source); the apps may also assign by polygon (dma_areas).",
   "A list field holds refs separated by ';' with no spaces.",
   "Node refs: where the delivery left a pipe end or point asset without a usable node ref the import fills it once from the geometry (ends and points within 1 cm share a ref; *_node_source says gis / derived_coincident / derived_own). A derived ref has the form c:<x>_<y> (metres, 3 decimal places, the cluster's lowest end point). No node rows are added; the apps never re-derive.",
-  "Meter role (no field, no guessing): for DMA X, a network meter with dma_ref = X is an inlet and one with dma_from_ref = X an export; where dma_from_ref is not delivered the export role is unknown (engineer to say)."
+  "Meter role (no field, no guessing): for DMA X, a network meter with dma_ref = X is an inlet and one with dma_from_ref = X an export; where dma_from_ref is not delivered the export role is unknown (engineer to say).",
+  "Logger locations: a meter's logger links live in meter_loggers; every other logger / monitoring location (critical points, PRV and pump tappings, DMA inlet tappings ...) is a row of monitoring_points."
  ],
  "rules": [
   {
@@ -863,13 +864,6 @@
      "required": false,
      "set_by": "converter",
      "description": "Both DMAs when the asset sits on a boundary (sorted, ';' separated; dma_ref_source = derived_boundary, dma_ref blank). Written by the import, never mapped; blank = not on a boundary."
-    },
-    {
-     "name": "monitoring_role",
-     "type": "code",
-     "required": false,
-     "code_list": "monitoring_role",
-     "description": "Why the asset is a monitoring point (critical point, low level, DG2, PRV inlet / outlet ...); blank = not a monitoring point"
     },
     {
      "name": "confirm",
@@ -1865,13 +1859,6 @@
      "description": "Both DMAs when the asset sits on a boundary (sorted, ';' separated; dma_ref_source = derived_boundary, dma_ref blank). Written by the import, never mapped; blank = not on a boundary."
     },
     {
-     "name": "monitoring_role",
-     "type": "code",
-     "required": false,
-     "code_list": "monitoring_role",
-     "description": "Why the asset is a monitoring point (critical point, low level, DG2, PRV inlet / outlet ...); blank = not a monitoring point"
-    },
-    {
      "name": "confirm",
      "type": "list",
      "required": false,
@@ -2104,6 +2091,178 @@
      "type": "datetime",
      "required": false,
      "description": "Start of this setting period (blank = not said)"
+    },
+    {
+     "name": "status",
+     "type": "code",
+     "required": false,
+     "code_list": "status",
+     "description": "Asset status"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "monitoring_points": {
+   "geometry": "Point",
+   "description": "Pressure / flow monitoring locations that are not meters: critical points, low level points, DG2 points, PRV inlet / outlet and pump suction / delivery tappings, DMA inlet tappings. One row per logger / monitoring location. A location may point at the asset it sits on (asset_layer + asset_ref) or stand on its own (node_ref, geometry). Meter logger links stay in meter_loggers. Apps may show these sites; PLDR does not use them for flushing or scores.",
+   "unique": [
+    [
+     "monitoring_ref"
+    ]
+   ],
+   "unique_check": "warn",
+   "app_table": "-",
+   "fields": [
+    {
+     "name": "monitoring_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Monitoring location reference as delivered"
+    },
+    {
+     "name": "monitoring_role",
+     "type": "code",
+     "required": false,
+     "code_list": "monitoring_role",
+     "description": "Why the point is monitored (confirm-only, never matched automatically from measurement words)"
+    },
+    {
+     "name": "measure",
+     "type": "code",
+     "required": false,
+     "code_list": "measure",
+     "description": "What the location measures, when the source says"
+    },
+    {
+     "name": "asset_layer",
+     "type": "text",
+     "required": false,
+     "values": [
+      "hydrants",
+      "valves",
+      "pumps",
+      "meters",
+      "sites",
+      "assets"
+     ],
+     "description": "WI layer of the asset the location sits on: hydrants / valves / pumps / meters / sites / assets (blank = stands on its own)"
+    },
+    {
+     "name": "asset_ref",
+     "type": "ref",
+     "required": false,
+     "ref_to": [
+      "hydrants.hydrant_ref",
+      "valves.valve_ref",
+      "pumps.pump_ref",
+      "meters.meter_ref",
+      "sites.site_ref",
+      "assets.asset_ref"
+     ],
+     "ref_check": "should_exist",
+     "description": "Ref of that asset in asset_layer (should exist in that layer when given)"
+    },
+    {
+     "name": "node_ref",
+     "type": "ref",
+     "required": false,
+     "ref_to": [
+      "nodes.node_ref",
+      "pipes.from_node_ref",
+      "pipes.to_node_ref"
+     ],
+     "ref_check": "should_exist",
+     "description": "Network node the location sits on"
+    },
+    {
+     "name": "node_ref_source",
+     "type": "code",
+     "required": false,
+     "code_list": "value_source",
+     "code_subset": [
+      "gis",
+      "derived_coincident"
+     ],
+     "set_by": "converter",
+     "description": "Where node_ref came from (written by the import, never mapped): gis / derived_coincident"
+    },
+    {
+     "name": "ground_level_m",
+     "type": "number",
+     "required": false,
+     "units": "m AOD",
+     "description": "Ground level at the location in m AOD, kept as delivered - may differ from the node level; used by pressure calculations"
+    },
+    {
+     "name": "ground_level_source",
+     "type": "code",
+     "required": false,
+     "code_list": "value_source",
+     "code_subset": [
+      "gis"
+     ],
+     "set_by": "converter",
+     "description": "Where ground_level_m came from (written by the import, never mapped): gis"
+    },
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": false,
+     "ref_to": "dma_areas.dma_ref",
+     "ref_check": "should_exist",
+     "description": "DMA the location is in"
+    },
+    {
+     "name": "dma_ref_source",
+     "type": "code",
+     "required": false,
+     "code_list": "value_source",
+     "code_subset": [
+      "gis",
+      "derived_connection",
+      "derived_boundary",
+      "derived_polygon"
+     ],
+     "set_by": "converter",
+     "description": "Where dma_ref came from (written by the import, never mapped): gis / derived_connection / derived_boundary / derived_polygon"
+    },
+    {
+     "name": "dma_boundary_refs",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "Both DMAs when the location sits on a boundary (sorted, ';' separated; dma_ref_source = derived_boundary, dma_ref blank). Written by the import, never mapped; blank = not on a boundary."
+    },
+    {
+     "name": "logger_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Logger / SCADA reference as delivered"
+    },
+    {
+     "name": "valid_from",
+     "type": "datetime",
+     "required": false,
+     "description": "Start of the monitoring (blank = not said)"
+    },
+    {
+     "name": "valid_to",
+     "type": "datetime",
+     "required": false,
+     "description": "End of the monitoring (blank = not said / open)"
     },
     {
      "name": "status",

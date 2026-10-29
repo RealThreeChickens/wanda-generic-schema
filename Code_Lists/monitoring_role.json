@@ -1,7 +1,7 @@
 {
  "code_list": "monitoring_role",
  "version": "1.0.0",
- "description": "Why a point asset is a pressure / flow monitoring point. Blank = not a monitoring point.",
+ "description": "Why a point is a monitoring point (a pressure / flow monitoring location in the monitoring_points layer). Confirm-only: a role is never matched automatically from measurement words; the delivery maps it through its own codes.",
  "codes": [
   {
    "code": "critical_point",
@@ -41,6 +41,27 @@
    "label": "PRV outlet monitoring point",
    "synonyms": [
     "prv outlet"
+   ]
+  },
+  {
+   "code": "pump_suction",
+   "label": "Pump suction monitoring point",
+   "synonyms": [
+    "pump suction"
+   ]
+  },
+  {
+   "code": "pump_delivery",
+   "label": "Pump delivery monitoring point",
+   "synonyms": [
+    "pump delivery"
+   ]
+  },
+  {
+   "code": "dma_inlet",
+   "label": "DMA inlet monitoring point",
+   "synonyms": [
+    "dma inlet"
    ]
   },
   {
