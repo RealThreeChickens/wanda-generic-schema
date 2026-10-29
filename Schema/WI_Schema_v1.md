@@ -1,14 +1,14 @@
 # WANDa (WI) schema v1 - performance data and network GIS
 
-Status: standard std-2026.10.16 SIGNED by James 16/10/2026 (wanda_network_v1 1.2.1, wanda_performance_v1 1.0.0, valve_type 1.3.2); std-2026.10.14 signed 15/10 (network 1.2.0); sign-offs in `..\Signoff\`; v1.1.0 and network 1.2.0 frozen in `..\_frozen\`.
+Status: network 1.3.0 DRAFT 29/10/2026 awaiting sign-off (`..\Signoff\std-2026.10.29-DRAFT.md`; 1.2.1 frozen in `..\_frozen\network_1.2.1\`). Last signed: standard std-2026.10.16 SIGNED by James 16/10/2026 (wanda_network_v1 1.2.1, wanda_performance_v1 1.0.0, valve_type 1.3.2); std-2026.10.14 signed 15/10 (network 1.2.0); sign-offs in `..\Signoff\`; v1.1.0 and network 1.2.0 frozen in `..\_frozen\`.
 Generic: no client names, layouts or codes.
 Machine-readable files are the source; this page only explains them.
 
 | File | What |
 |---|---|
 | `Schema/wanda_performance_v1.json` | Performance data kinds `contacts`, `network_events`, `wq_samples`, `flush_records` (v1.0.0) |
-| `Schema/wanda_network_v1.json` | Network GIS, 17 layers (v1.2.1, below; change log at the end) + ref rules + row flags + the WI app rules R1-R11 |
-| `Code_Lists/*.json` | 21 code lists (network: `asset_type`, `material`, `status`, `pipe_function`, `water_type`, `units`, `lining`, `valve_type`, `normal_position`, `hydrant_type`, `hydrant_class`, `outlet_arrangement`, `meter_function`, `area_type`, `control_type`, `customer_type`, `non_household_type`, `site_type`; performance: `contact_category`, `event_type`, `determinand`) |
+| `Schema/wanda_network_v1.json` | Network GIS, 17 layers + 2 attribute tables (v1.3.0, below; change log at the end) + ref rules + row flags + the WI app rules R1-R11 |
+| `Code_Lists/*.json` | 29 code lists (network: `asset_type`, `material`, `status`, `pipe_function`, `water_type`, `units`, `lining`, `valve_type`, `normal_position`, `hydrant_type`, `hydrant_class`, `outlet_arrangement`, `meter_function`, `area_type`, `control_type`, `customer_type`, `non_household_type`, `site_type`, `value_source`, `ownership`, `monitoring_role`, `prv_control_mode`; telemetry (lists only, the telemetry schema follows): `telemetry_system`, `measure`, `measure_units`, `reading_quality`; performance: `contact_category`, `event_type`, `determinand`) |
 
 Each field: `name`, `type`, `required`, optional `code_list`, `units`, `ref_to` + `ref_check`, `app` (the PLDR project
 column it feeds), `description`. Types (`types` block): `ref` (text exactly as delivered - never changed; a float id
@@ -36,9 +36,9 @@ Rules kept from the template:
   code list factor), or lat/lon WGS84.
 - Area levels (`dmz`, `manager_area`, `region`, `zone`) as delivered.
 
-## Network GIS (`wanda_network_v1` v1.2.1)
+## Network GIS (`wanda_network_v1` v1.3.0)
 
-One GeoPackage `wanda_network.gpkg`, EPSG:27700, metres; layer name = kind name; `dma_subs` is an attribute table (no
+One GeoPackage `wanda_network.gpkg`, EPSG:27700, metres; layer name = kind name; `dma_subs`, `meter_loggers` and `prv_settings` are attribute tables (no
 geometry); polygon layers are MultiPolygon (Polygon rows accepted). Plus `wanda_delivery.json` (schema version,
 mapping id / version / sha256, converter, row counts per layer, rows dropped by code, source layer -> WI layer).
 The converter changes only layer names, field names and the delivery's own codes; values as delivered. Node
@@ -47,13 +47,13 @@ by per-client tables.
 
 | Layer | Geometry | App table | Required | Optional |
 |---|---|---|---|---|
-| `pipes` | Line (MultiLineString only when flagged `multipart`) | gis_pipes | pipe_ref, pipe_function, diameter, diameter_units, material | from_node_ref, to_node_ref, length_m, status, water_type, dma_ref, dma_sub_ref, dma_sub_type, wqz_ref, control_group_ref, sub_region_ref, region_ref, model_area_ref, installed_date, lining_current / factory / previous, lining_date, multipart |
+| `pipes` | Line (MultiLineString only when flagged `multipart`) | gis_pipes | pipe_ref, pipe_function, diameter, diameter_units, material | from_node_ref, to_node_ref, length_m, status, water_type, dma_ref, dma_sub_ref, dma_sub_type, wqz_ref, control_group_ref, sub_region_ref, region_ref, model_area_ref, installed_date, lining_current / factory / previous, lining_date, multipart, from_node_source, to_node_source, dma_ref_source, material_source, diameter_source, installed_date_source, ownership |
 | `nodes` | Point | gis_nodes | node_ref | elevation_m |
 | `elevation_points` | Point | WDA pipe elevation (nearest point) | elevation_m | point_ref |
-| `valves` | Point | gis_valves | valve_ref, valve_type | regulator_type, node_ref, normal_position, status, dma_ref, elevation_m, installed_date |
-| `hydrants` | Point | gis_hydrants | hydrant_ref | hydrant_type, hydrant_class, outlet_arrangement, node_ref, status, dma_ref, control_group_ref, elevation_m, installed_date |
-| `meters` | Point | gis_meters | meter_ref, meter_function | node_ref, pipe_ref, site_ref, dma_ref, dma_from_ref, control_group_ref, meter_type, status |
-| `properties` | Point | gis_properties | property_ref | pipe_ref, dma_ref, customer_type, non_household_type, building_no, sub_building, building_name, organisation, street, locality, town, postcode, ground_level_m, model_area_ref |
+| `valves` | Point | gis_valves | valve_ref, valve_type | regulator_type, node_ref, normal_position, status, dma_ref, elevation_m, installed_date, pipe_ref, node_ref_source, pipe_ref_source, dma_ref_source, dma_boundary_refs |
+| `hydrants` | Point | gis_hydrants | hydrant_ref | hydrant_type, hydrant_class, outlet_arrangement, node_ref, status, dma_ref, control_group_ref, elevation_m, installed_date, pipe_ref, node_ref_source, pipe_ref_source, dma_ref_source, dma_boundary_refs, monitoring_role |
+| `meters` | Point | gis_meters | meter_ref, meter_function | node_ref, pipe_ref, site_ref, dma_ref, dma_from_ref, control_group_ref, meter_type, status, diameter, diameter_units, meter_function_delivered, node_ref_source, pipe_ref_source, dma_ref_source, dma_boundary_refs |
+| `properties` | Point | gis_properties | property_ref | pipe_ref, dma_ref, customer_type, non_household_type, building_no, sub_building, building_name, street, locality, town, postcode, ground_level_m, model_area_ref, dma_ref_source; `organisation` is a restricted placeholder, never filled (v1.3) |
 | `dma_areas` | Polygon | gis_dma_polygons + dma_hierarchy | dma_ref, area_type | dma_name, control_group_ref, wqz_ref, sub_region_ref, region_ref, model_area_ref, customer_count |
 | `dma_subs` | - | gis_pipes.dma_subzone_ref / _type | dma_sub_ref, dma_ref | dma_sub_type, control_type, control_asset_refs |
 | `supply_zones` | Polygon | dma_info.zone | wqz_ref | name, source |
@@ -61,13 +61,26 @@ by per-client tables.
 | `sub_regions` | Polygon | (open point 2) | sub_region_ref | region_ref |
 | `regions` | Polygon | dma_hierarchy.region | region_ref | - |
 | `model_areas` | Polygon | (model registry) | model_area_ref | model_name, model_no |
-| `pumps` | Point | - | pump_ref | node_ref |
-| `sites` | Point | - | site_ref, site_type | node_ref, status |
-| `assets` | Point | - (v1.2; all apps by asset_type) | asset_ref, asset_type | asset_type_delivered, status, node_ref, pipe_ref, dma_ref, elevation_m, installed_date |
+| `pumps` | Point | - | pump_ref | node_ref, node_ref_source |
+| `sites` | Point | - | site_ref, site_type | node_ref, status, node_ref_source |
+| `assets` | Point | - (v1.2; all apps by asset_type) | asset_ref, asset_type | asset_type_delivered, status, node_ref, pipe_ref, dma_ref, elevation_m, installed_date, node_ref_source, pipe_ref_source, dma_ref_source, dma_boundary_refs, monitoring_role |
+| `meter_loggers` | - (attribute table) | - | meter_ref, system, logger_ref | channel, measure, valid_from, valid_to, source |
+| `prv_settings` | - (attribute table, dated) | - | prv_ref | valve_ref, control_mode, inlet_setting, outlet_setting, modulation_setting, diameter, diameter_units, make, model, controller_ref, dma_ref, dma_from_ref, dma_sub_ref, meter_ref, cp_refs, installed_date, valid_from, status |
 
 v1.2 adds to every layer the converter-set row flags `confirm` and `extra` (last two fields, never mapped); to
 `nodes` node_type, status; to `properties` property_type, business_type, sub_region_ref and the restricted placeholder
 sensitive_customer; to `pumps` / `sites` status.
+
+### v1.3 (29/10/2026, draft) - additive
+
+- **Where a value came from.** Fields `*_source` (code list `value_source`: gis, derived_coincident, derived_own, derived_connection, derived_boundary, derived_polygon, client_inferred) say whether a node, pipe or area ref, a material, a diameter or an installed date was delivered or filled by the import. The import writes them; no mapping sets them. A value that is not `gis` is a derived or inferred value the apps may count and report, never re-derive.
+- **Node refs filled once.** Where a delivery left a pipe end or point asset without a node ref the import fills it from the geometry (ends and points within 1 cm share one ref). A derived ref is `c:<x>_<y>` (metres, 3 decimal places, the cluster's lowest end point). No node rows are added. Blank area refs are filled once (connected network first, then polygon); a point on a boundary keeps `dma_ref` blank and lists both areas in `dma_boundary_refs`.
+- **Pipes** gain `ownership` (company / private / unknown; blank = not said). **Valves and hydrants** gain `pipe_ref`. **Meters** gain `diameter`, `diameter_units` and `meter_function_delivered` (the delivered value(s) behind `meter_function`, written by the converter). **Assets and hydrants** gain `monitoring_role` (critical point, low level, DG2, PRV inlet / outlet, other; blank = not a monitoring point).
+- **`properties.organisation` is restricted**: a placeholder, never filled (as `sensitive_customer`); business use is carried by `business_type` / `non_household_type`.
+- **New attribute tables** `meter_loggers` (meter to logger / SCADA reference; blank `logger_ref` skipped and counted) and `prv_settings` (PRV settings and control mode, dated, text as delivered).
+- **Meter function** gains `source`, `reservoir_inlet`, `reservoir_outlet`, `pump` (network) and `process` (not on the supply network). "Waste meter" is not a synonym of any code (its UK meaning varies); a delivery maps it through its own `codes.confirm`. **Pipe function** `trunk`: `serves_customers` is null (the module decides; client property links are kept as delivered).
+- **Telemetry code lists** `telemetry_system`, `measure`, `measure_units` (group + factor to the WI unit), `reading_quality` are defined here; the telemetry schema itself is a later version.
+- New import mapping keys that go with this version (documented with the import): `inferred` (fallback columns, writes `<field>_source`), `units_in_value`, `only_new_against`, `xy` (easting / northing columns of a CSV).
 
 ### James's standing rules (13/10/2026) - v1.2
 
@@ -83,7 +96,7 @@ sensitive_customer; to `pumps` / `sites` status.
    a block, never silent (unmapped codes are counted and reported).
 3. **Personal data never imported** - people's names, phone numbers, e-mail addresses (the loader refuses a mapping
    that names such a column; free text loses them). Addresses and business / property types ARE imported (WI names:
-   property_type, business_type, organisation, address fields). Sensitive customers only through the restricted
+   property_type, business_type, address fields); organisation names are not (v1.3: restricted placeholder). Sensitive customers only through the restricted
    placeholder `properties.sensitive_customer` (special sign-in in WI; never filled by the converter).
 4. **Uncertain classes flagged.** A code whose code-list `confirm` attribute is true (pipe_function unknown:
    serves_customers false - "probably not, but confirm"), a delivered value with no mapping, or a value the mapping
@@ -130,15 +143,15 @@ WI app rules (one per code attribute, `rules` block):
 | Rule | Code list . attribute | App behaviour |
 |---|---|---|
 | R1 | status.in_network | every asset kept; only in_network assets build the analysed network (blank = unknown = in) |
-| R2 | pipe_function.serves_customers | a property snaps only to such a pipe; a delivered pipe_ref is kept |
+| R2 | pipe_function.serves_customers | a property snaps only to such a pipe; a delivered pipe_ref is kept; null (trunk) = the module decides |
 | R3 | pipe_function.potable_network | raw / non-potable mains kept, not analysed |
 | R4 | valve_type.isolates (+ list-level blank_isolates) | stops an isolation trace (is_gate_valve); isolation valves only - sluice, butterfly, boundary, district, motorised. A BLANK valve_type isolates (`blank_isolates: true`); `other` does not (valve_type 1.3.2, James 14/10) |
 | R5 | normal_position.shut | closed = boundary as delivered; throttled / unknown = open |
-| R6 | meter_function.network | only network meters into gis_meters |
+| R6 | meter_function.network | only network meters into gis_meters (district, bulk, source, reservoir, pump, trunk, supply); process meters are not on the supply network |
 | R7 | area_type.is_dma | only DMA areas become DMA polygons |
 | R8 | material.band | discolouration risk band (unknown = 3) |
 | R9 | hydrant_class.supply_tier | FB / FJ / TB first tier, LJ second, unclassified not used |
-| R10 | units.factor | diameter x factor = mm per row; coordinates metres BNG |
+| R10 | units.factor | diameter x factor = mm per row (pipes, meters, PRVs); coordinates metres BNG |
 | R11 | *.confirm | an uncertain class: the field is listed in the row's confirm (v1.2) |
 
 Not in the schema on purpose: personal fields of any kind (no people's names, phones, e-mails; priority-service /
@@ -199,9 +212,15 @@ value and coordinate) - the WWI identity skin.
 | valve_type 1.3.1 | 14/10/2026 | **Reverts the 1.2.0 isolates rule.** isolates true only for isolation valves: sluice, butterfly, boundary, district, motorised. false for prv, psv, frv, pbv, float, nrv, washout, air, stop_tap, other (blank = unknown = false). Codes unchanged (patch) | James 14/10: PRV / PSV / FCV are not isolation valves (water passes backwards; type often unknown); an NRV is no reliable reverse isolation; only isolation valves isolate, for mains repairs and analysis. GIS isolation must match the Synergi isolation scripts MM runs (they close Synergi VL valves only) and the legacy readers (gate valves only) |
 | valve_type 1.3.2 | 14/10/2026 | List-level `blank_isolates: true` (+ `blank_isolates_reason`): a BLANK valve_type isolates; `other` still does not. Codes and per-code isolates unchanged (patch). 1.3.1 kept in `..\_frozen\valve_type_1.3.1\` | James 14/10: an unrecorded type is far more likely an ordinary isolation valve than a PRV; aligns every app (PLDR already did this; WDA aligned; PLDR drift check reads the flag) |
 | network 1.2.1 | 16/10/2026 | text only: every filed area polygon valid; converter repairs invalid polygons (make_valid structure) and records geometry_repaired; validator refuses an unrepaired one (NW-INVALID); no field / layer / code change, 1.2.0 sets still read | James 16/10 |
+| network 1.3.0 | 29/10/2026 | DRAFT, additive: `*_source` provenance fields (value_source) on pipes, valves, hydrants, meters, assets, pumps, sites, properties; pipes ownership; valves + hydrants pipe_ref; `dma_boundary_refs`; meters diameter, diameter_units, meter_function_delivered; assets + hydrants monitoring_role; new attribute tables meter_loggers and prv_settings | import rework: derived values recorded, meter size / function, monitoring points, PRV settings |
+| network 1.3.0 | 29/10/2026 | `properties.organisation` marked restricted (never filled); text: node and area refs filled once by the import (ref_rules), meter inlet / export rule, R2 null = module decides, R6 / R10 wording | names never imported; one place for the derivation rules |
+| meter_function 1.2.0 | 29/10/2026 | New codes source, reservoir_inlet, reservoir_outlet, pump (network) and process (not network); labels of reservoir and district clarified; "waste meter" deliberately not a synonym | source / reservoir / pump meters were not distinguishable; UK meaning of waste meter varies |
+| pipe_function 1.3.0 | 29/10/2026 | trunk: serves_customers null (module decides) with a note; nothing else changes | property links on trunk mains are kept as delivered |
+| value_source, ownership, monitoring_role, prv_control_mode 1.0.0 | 29/10/2026 | New code lists | fields above |
+| telemetry_system, measure, measure_units, reading_quality 1.0.0 | 29/10/2026 | New code lists (units with group and factor to the WI unit); the telemetry schema follows in a later version | logger / telemetry references and readings |
 
 All v1.2.0 changes are additive for a reader of the WI set (new optional fields at the end of each layer, a new layer,
 new codes) except pipe_function.unknown serves_customers (true -> false). All v1.1.0 changes are additive (new optional fields, a new optional layer, new codes) or label / attribute
-corrections; a v1.0.0 set still reads. Network 1.2.1 is text only: a 1.2.0 set still reads. Sign-offs: `..\Signoff\`.
+corrections; a v1.0.0 set still reads. Network 1.2.1 is text only: a 1.2.0 set still reads. Network 1.3.0 is additive: a 1.2.x set still reads (new fields blank); consumers must accept the new meter codes and a null trunk serves_customers before a 1.3.0 set is filed. Sign-offs: `..\Signoff\`.
 
 - material code list 1.2.1 (13/10/2026): bands aligned with the decided WRc banding - AK 3 -> 1 (black alkathene, PE family), FRC 3 -> 2 (like AC; James 13/10).
