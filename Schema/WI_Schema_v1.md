@@ -163,6 +163,27 @@ WI writes this schema itself: `04_Generator\src\wanda_network.py` (region_gis `-
 into `Skins\_preimport_gis\wanda_network\`). Its identity proof rebuilds the Truth GIS from the gpkg exactly (every
 value and coordinate) - the WWI identity skin.
 
+## Health check (`wanda_health_v1` 1.0.0 - DRAFT for James's sign-off, 29/10/2026)
+
+Not in the standard (no STANDARD.json entry, no tag) until James signs. Stand-alone intake gate and static report
+(`wanda_import health`): the newest models set vs the newest WANDa GIS set - static GIS and model data only (no PLDR
+results, model runs or flows). Facts only, no flags: the tool proposes only `engineer_review` (a model unreadable or
+its names not checked); otherwise the proposal is blank and the engineer chooses ok / ok_with_warnings /
+needs_new_model. Two triggers, one tool: `new_gis` (every model) and `new_model` (named models; others carried).
+Set `derived\health\<YYYY-MM-DD>_health\` (the dated snapshot): full CSVs, no row limit - `model_health`,
+`dma_health` (key model_name + dma_ref; a DMA no model touches has model_name `-`), `dma_items` (FIDs behind modelled
+DMAs, for the PLDR map), the per-model lists `pipe_list`, `valve_list`, `hydrant_list`, `meter_list`, `pump_list`,
+`site_list`, `regulator_list` (GIS and model side by side, `source` gis / model / both, `link_method`),
+`data_quality`, `id_defects`; `wanda_health.json` (trigger, rules, models[]), `built_from.json` ({gis, models});
+reports `Intake_Health_<date>.xlsx` (Summary, Models, DMAs, Valve_differences, Data_quality, Notes) and one
+`Health_<model>_<date>.xlsx` per model (DMAs, Pipes, Valves, Hydrants, Meters, Regulators, Pumps, Tanks); a sheet
+over 1,000,000 rows continues in `<sheet>_2`. Boundary valves: on a set of schema 1.3.0 the DMAs are the import's own (dma_ref + dma_boundary_refs; placement
+reported by dma_ref_source: gis / derived_connection / derived_boundary / derived_polygon); on a 1.2.x set the check
+places them itself (node_ref + the connected in-network pipes' dma_refs, DMA polygons within 1 m only when node_ref is
+blank). A valve is listed against every DMA it touches. The check reads each GIS set with the schema version the set recorded.
+Code lists `health_outcome` (only engineer_review proposed by the tool) and `model_coverage`. Rules: the schema's
+`rules` (values) and `rule_text` blocks.
+
 ## Open points for James
 
 1. Spun iron: one WI code `SCI` for any delivered spun iron (no auto synonym for the short code "SI" - it goes to the
