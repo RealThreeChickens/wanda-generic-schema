@@ -113,7 +113,7 @@ control group; DMA -> model area. Each level has its own layer; `dma_areas` name
 Ref rules: refs are text exactly as delivered; `ref_to` names the layer.field a ref points at (a list = any of them -
 a node ref may name a junction, a pipe end or a point asset that is its own network node, as a valve in a UK
 geometric network); `must_exist` = an error when the target layer is delivered, `should_exist` = counted and
-reported; `unique` is each layer's key (never blank). Hydrant and meter refs: duplicates are reported (warn), the
+reported; `unique` is each layer's key (never blank, except the optional key parts of `meter_loggers` (channel) and `prv_settings` (valid_from), which are compared as blank). Hydrant and meter refs: duplicates are reported (warn), the
 reader keeps the first. `dma_areas.dma_ref` is not unique (several polygons per DMA; the reader dissolves them).
 
 Converter requirement (step 9): keep the source row order within each layer (first-wins readers depend on it).
@@ -147,7 +147,7 @@ WI app rules (one per code attribute, `rules` block):
 | R3 | pipe_function.potable_network | raw / non-potable mains kept, not analysed |
 | R4 | valve_type.isolates (+ list-level blank_isolates) | stops an isolation trace (is_gate_valve); isolation valves only - sluice, butterfly, boundary, district, motorised. A BLANK valve_type isolates (`blank_isolates: true`); `other` does not (valve_type 1.3.2, James 14/10) |
 | R5 | normal_position.shut | closed = boundary as delivered; throttled / unknown = open |
-| R6 | meter_function.network | only network meters into gis_meters (district, bulk, source, reservoir, pump, trunk, supply); process meters are not on the supply network |
+| R6 | meter_function.network | only network meters into gis_meters: district, bulk, reservoir, reservoir_inlet, reservoir_outlet, trunk, supply, source, pump; process, customer, commercial and other are not network meters |
 | R7 | area_type.is_dma | only DMA areas become DMA polygons |
 | R8 | material.band | discolouration risk band (unknown = 3) |
 | R9 | hydrant_class.supply_tier | FB / FJ / TB first tier, LJ second, unclassified not used |

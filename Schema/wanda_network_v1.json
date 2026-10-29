@@ -36,7 +36,7 @@
  "ref_rules": [
   "Every *_ref field is text exactly as delivered: trimmed, case kept, leading zeros kept, a float id 12345.0 written 12345.",
   "ref_to names the layer.field a ref points at (a list = any of them; a node ref may name a junction, a pipe end or a point asset that is its own network node, e.g. a valve); ref_check must_exist = an error when the target layer is delivered and the value is missing from it; should_exist = counted and reported (e.g. a node ref to a site / pump junction).",
-  "unique lists each layer's key (never blank); unique_check warn = duplicates reported, the reader keeps the first (hydrants, meters); a layer with no unique list (dma_areas) may repeat its ref.",
+  "unique lists each layer's key (never blank, except the optional key parts of meter_loggers (channel) and prv_settings (valid_from), which are compared as blank); unique_check warn = duplicates reported, the reader keeps the first (hydrants, meters); a layer with no unique list (dma_areas) may repeat its ref.",
   "Area refs on assets (dma_ref, wqz_ref ...) are the delivery's own; the import fills blank area refs once (dma_ref_source); the apps may also assign by polygon (dma_areas).",
   "A list field holds refs separated by ';' with no spaces.",
   "Node refs: where the delivery left a pipe end or point asset without a usable node ref the import fills it once from the geometry (ends and points within 1 cm share a ref; *_node_source says gis / derived_coincident / derived_own). A derived ref has the form c:<x>_<y> (metres, 3 decimal places, the cluster's lowest end point). No node rows are added; the apps never re-derive.",
@@ -103,7 +103,7 @@
    "applies_to": [
     "meters"
    ],
-   "rule": "Every meter is loaded (customer meters too); only network meters are loaded into gis_meters (DMA inlets, bulk, source, reservoir in / out, pump, trunk, supply); process meters are not on the supply network."
+   "rule": "Every meter is loaded (customer meters too); only network meters are loaded into gis_meters: district, bulk, reservoir, reservoir_inlet, reservoir_outlet, trunk, supply, source, pump. process, customer, commercial and other are not network meters."
   },
   {
    "id": "R7",
@@ -673,10 +673,10 @@
      "code_list": "value_source",
      "code_subset": [
       "gis",
-      "derived_connection"
+      "derived_coincident"
      ],
      "set_by": "converter",
-     "description": "Where pipe_ref came from (written by the import, never mapped): gis / derived_connection"
+     "description": "Where pipe_ref came from (written by the import, never mapped): gis / derived_coincident (the point lies within 1 cm of exactly one pipe)"
     },
     {
      "name": "dma_ref_source",
@@ -838,10 +838,10 @@
      "code_list": "value_source",
      "code_subset": [
       "gis",
-      "derived_connection"
+      "derived_coincident"
      ],
      "set_by": "converter",
-     "description": "Where pipe_ref came from (written by the import, never mapped): gis / derived_connection"
+     "description": "Where pipe_ref came from (written by the import, never mapped): gis / derived_coincident (the point lies within 1 cm of exactly one pipe)"
     },
     {
      "name": "dma_ref_source",
@@ -1023,10 +1023,10 @@
      "code_list": "value_source",
      "code_subset": [
       "gis",
-      "derived_connection"
+      "derived_coincident"
      ],
      "set_by": "converter",
-     "description": "Where pipe_ref came from (written by the import, never mapped): gis / derived_connection"
+     "description": "Where pipe_ref came from (written by the import, never mapped): gis / derived_coincident (the point lies within 1 cm of exactly one pipe)"
     },
     {
      "name": "dma_ref_source",
@@ -1838,10 +1838,10 @@
      "code_list": "value_source",
      "code_subset": [
       "gis",
-      "derived_connection"
+      "derived_coincident"
      ],
      "set_by": "converter",
-     "description": "Where pipe_ref came from (written by the import, never mapped): gis / derived_connection"
+     "description": "Where pipe_ref came from (written by the import, never mapped): gis / derived_coincident (the point lies within 1 cm of exactly one pipe)"
     },
     {
      "name": "dma_ref_source",
@@ -1889,7 +1889,7 @@
   },
   "meter_loggers": {
    "geometry": null,
-   "description": "Links from a meter to the logger / SCADA references that record it (attribute table, no geometry). One row per meter, system, logger reference and channel; logger reading data is a separate (later) telemetry set. Rows with a blank logger_ref are skipped and counted (skip_blank). A blank channel means all channels (a blank part of the key is compared as blank). Rule R6 covers the new meter codes.",
+   "description": "Links from a meter to the logger / SCADA references that record it (attribute table, no geometry). One row per meter, system, logger reference and channel; logger reading data is a separate (later) telemetry set. Rows with a blank logger_ref are skipped and counted (skip_blank). A blank channel means all channels (a blank part of the key is compared as blank).",
    "unique": [
     [
      "meter_ref",

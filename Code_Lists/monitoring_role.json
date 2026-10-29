@@ -33,16 +33,14 @@
    "code": "prv_inlet",
    "label": "PRV inlet monitoring point",
    "synonyms": [
-    "prv inlet",
-    "inlet pressure"
+    "prv inlet"
    ]
   },
   {
    "code": "prv_outlet",
    "label": "PRV outlet monitoring point",
    "synonyms": [
-    "prv outlet",
-    "outlet pressure"
+    "prv outlet"
    ]
   },
   {

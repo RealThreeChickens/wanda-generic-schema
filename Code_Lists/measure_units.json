@@ -1,7 +1,7 @@
 {
  "code_list": "measure_units",
  "version": "1.0.0",
- "description": "Telemetry measurement units. Each unit has its measure group and the factor to the WI unit of that group (value x factor = WI unit). WI units: flow l/s, volume m3, pressure m head, level m. A null factor = not convertible from the delivery alone (a percentage of full needs the asset's height). Codes are unique across the list, so the pressure and level metres are m_head and m_level.",
+ "description": "Telemetry measurement units. Each unit has its measure group and the factor to the WI unit of that group (value x factor = WI unit). WI units: flow l/s, volume m3, pressure m head, level m. A null factor = not convertible from the delivery alone (a percentage of full needs the asset's height). Codes are unique across the list, so the pressure and level metres are m_head and m_level. A bare \"m\" / \"metres\" is never resolved by synonym alone: it resolves by the channel's measure (pressure -> m_head, level -> m_level).",
  "attributes": {
   "group": "the measure the unit belongs to (flow, volume, pressure, level; any for unknown)",
   "factor": "multiply a delivered value by this to get the WI unit of the group (null = not convertible from the delivery alone)"
@@ -80,7 +80,7 @@
   },
   {
    "code": "ml",
-   "label": "megalitres",
+   "label": "megalitres (UK water usage)",
    "synonyms": [
     "ml",
     "megalitre",
@@ -158,9 +158,9 @@
    "code": "m_level",
    "label": "metres (level)",
    "synonyms": [
-    "m",
-    "metres",
-    "meters"
+    "m level",
+    "metres level",
+    "level metres"
    ],
    "group": "level",
    "factor": 1.0
