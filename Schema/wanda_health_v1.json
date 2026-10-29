@@ -766,7 +766,7 @@
      "name": "placed_by",
      "type": "text",
      "required": false,
-     "description": "How dma_refs was found: node (node_ref + the connected pipes' dma_refs) / polygon_1m (node_ref blank: DMA polygons within 1 m) / none"
+     "description": "How dma_refs was placed: gis (the delivered dma_ref) / derived_connection / derived_boundary / derived_polygon (the import's dma_ref_source, schema 1.3.0 sets) ; 1.2.x sets: node / dma_ref / polygon_1m (the check's own placement) ; none = no DMA"
     },
     {
      "name": "source",
@@ -887,6 +887,12 @@
      "description": "GIS dma_ref"
     },
     {
+     "name": "placed_by",
+     "type": "text",
+     "required": false,
+     "description": "How the DMA was placed: gis (the delivered dma_ref) / derived_connection / derived_boundary / derived_polygon (the import's dma_ref_source, schema 1.3.0 sets) ; 1.2.x sets: node / dma_ref / polygon_1m (the check's own placement) ; none = no DMA"
+    },
+    {
      "name": "source",
      "type": "text",
      "required": true,
@@ -965,6 +971,12 @@
      "type": "ref",
      "required": false,
      "description": "GIS dma_from_ref"
+    },
+    {
+     "name": "placed_by",
+     "type": "text",
+     "required": false,
+     "description": "How the DMA was placed: gis (the delivered dma_ref) / derived_connection / derived_boundary / derived_polygon (the import's dma_ref_source, schema 1.3.0 sets) ; 1.2.x sets: node / dma_ref / polygon_1m (the check's own placement) ; none = no DMA"
     },
     {
      "name": "meter_ref",
