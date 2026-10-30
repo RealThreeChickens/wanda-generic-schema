@@ -1,0 +1,35 @@
+{
+ "code_list": "health_outcome",
+ "version": "1.0.0",
+ "status": "draft for James's sign-off",
+ "description": "Intake outcome per model (wanda_health_v1 model_health.proposed_outcome). The 1.0 tool proposes only engineer_review (model unreadable, or its names could not be checked against GIS); otherwise the proposal is blank and a WRc engineer chooses ok / ok_with_warnings / needs_new_model from the facts before anything goes to the client.",
+ "attributes": {
+  "proposed_by_tool": "the 1.0 tool may propose this code (false = engineer decision only)"
+ },
+ "codes": [
+  {
+   "code": "ok",
+   "label": "OK",
+   "synonyms": [],
+   "proposed_by_tool": false
+  },
+  {
+   "code": "ok_with_warnings",
+   "label": "OK with warnings (the engineer notes what to watch)",
+   "synonyms": [],
+   "proposed_by_tool": false
+  },
+  {
+   "code": "engineer_review",
+   "label": "Engineer review (model unreadable, or its names could not be checked against GIS)",
+   "synonyms": [],
+   "proposed_by_tool": true
+  },
+  {
+   "code": "needs_new_model",
+   "label": "Needs a new model",
+   "synonyms": [],
+   "proposed_by_tool": false
+  }
+ ]
+}
