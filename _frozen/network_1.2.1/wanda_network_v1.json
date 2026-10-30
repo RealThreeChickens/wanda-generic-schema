@@ -1,0 +1,1537 @@
+{
+ "schema": "wanda_network_v1",
+ "version": "1.2.1",
+ "status": "v1.2.1 (16/10: text only - valid polygons, container.polygons) signed std-2026.10.16 (v1.2.0 frozen in _frozen/network_1.2.0); v1.2.0 signed std-2026.10.14 (v1.1.0 frozen in ..\\_frozen\\v1.1.0; 1.2 = James's standing rules 13/10: one import, all apps; accept all GIS; personal data never imported; uncertain classes flagged)",
+ "description": "WANDa network GIS. One GeoPackage, one layer per kind (layer name = kind name), EPSG:27700, coordinates in metres. Layers are aligned to the PLDR project tables (app_table / app). The converter changes only layer names, field names and the delivery's own codes; values (coordinates, diameters, lengths, dates, refs) are as delivered. App behaviour comes from ONE rule per code attribute (rules), never from per-client tables. ONE IMPORT, ALL APPS (v1.2): every clean-water layer and field of a delivery comes in - assets of every status and function (abandoned / proposed kept with status, raw / non-potable and service pipes with pipe_function, customer meters with meter_function, other point assets in `assets`) and every source field with no WI field in the row's `extra` bag; the apps take what they need by the rules. Waste-water layers stay out.",
+ "container": {
+  "format": "gpkg",
+  "file": "wanda_network.gpkg",
+  "crs": "EPSG:27700",
+  "coordinate_units": "m",
+  "attribute_tables": [
+   "dma_subs"
+  ],
+  "delivery_file": "wanda_delivery.json",
+  "polygons": "MultiPolygon layers accept Polygon rows. Every polygon in a filed set is valid (OGC): the converter repairs an invalid one as delivered (make_valid, polygon parts kept) and records each repair in wanda_delivery.json (geometry_repaired); the validator refuses an invalid polygon (NW-INVALID). 1.2.1, 16/10/2026",
+  "row_order": "the converter keeps the source row order within each layer (readers that keep the first of duplicate refs depend on it)",
+  "lines": "pipes is a LineString layer: the converter merges a multi-part line whose parts join into one LineString; a multi-part line whose parts do not join is kept as MultiLineString in the same layer with pipes.multipart = '1' (the only multi geometry a line layer may hold)",
+  "scope": "clean water only: every clean-water layer of a delivery is mapped to a WI layer or declared in the mapping's excluded list (the converter reports any delivered layer that is neither); waste-water layers (sewers, drainage areas, waste-water assets) are excluded",
+  "extra": "every layer ends with `confirm` and `extra` (set by the converter, never mapped): `extra` = the source fields with no WI field, as a JSON object keyed by the delivered column name (blank = none); `confirm` = the WI fields of the row whose classification needs confirming (';' list)"
+ },
+ "types": {
+  "ref": "text exactly as delivered (a float id 12345.0 is written 12345; leading zeros kept); never changed",
+  "text": "free text as delivered (phone numbers / e-mail addresses inside free text are removed)",
+  "code": "a code from the field's code list",
+  "date": "ISO 8601 date yyyy-mm-dd (stored as text)",
+  "datetime": "ISO 8601 yyyy-mm-dd, or yyyy-mm-ddThh:mm:ss when a time is known",
+  "time": "hh:mm (24 h)",
+  "number": "decimal number",
+  "int": "whole number",
+  "bool": "'1' = yes, blank = not said",
+  "list": "several refs separated by ';'",
+  "json": "a JSON object as text (UTF-8), keys = delivered column names, values as delivered (text, number, true / false; dates as ISO text); blank = no keys. Free text inside loses phone numbers / e-mail addresses as any text field"
+ },
+ "ref_rules": [
+  "Every *_ref field is text exactly as delivered: trimmed, case kept, leading zeros kept, a float id 12345.0 written 12345.",
+  "ref_to names the layer.field a ref points at (a list = any of them; a node ref may name a junction, a pipe end or a point asset that is its own network node, e.g. a valve); ref_check must_exist = an error when the target layer is delivered and the value is missing from it; should_exist = counted and reported (e.g. a node ref to a site / pump junction).",
+  "unique lists each layer's key (never blank); unique_check warn = duplicates reported, the reader keeps the first (hydrants, meters); a layer with no unique list (dma_areas) may repeat its ref.",
+  "Area refs on assets (dma_ref, wqz_ref ...) are the delivery's own; the apps may also assign by polygon (dma_areas).",
+  "A list field holds refs separated by ';' with no spaces."
+ ],
+ "rules": [
+  {
+   "id": "R1",
+   "code_list": "status",
+   "attribute": "in_network",
+   "applies_to": [
+    "pipes",
+    "nodes",
+    "valves",
+    "hydrants",
+    "meters",
+    "pumps",
+    "sites",
+    "assets"
+   ],
+   "rule": "Every asset is loaded, whatever its status (abandoned / proposed / mothballed kept); only in_network assets build the network the apps analyse (traces, isolation, property links). Blank status counts as unknown (in_network)."
+  },
+  {
+   "id": "R2",
+   "code_list": "pipe_function",
+   "attribute": "serves_customers",
+   "applies_to": [
+    "pipes",
+    "properties"
+   ],
+   "rule": "A property snaps only to a serves_customers pipe; a delivered properties.pipe_ref is kept as given. pipe_function unknown: serves_customers false and confirm (James 13/10 'probably not, but confirm')."
+  },
+  {
+   "id": "R3",
+   "code_list": "pipe_function",
+   "attribute": "potable_network",
+   "applies_to": [
+    "pipes"
+   ],
+   "rule": "Only potable_network pipes enter the potable network: raw / non-potable mains and customer-side supply / other pipes are kept, not analysed. Communication pipes stay potable_network as in v1.1 (James to decide one PLDR pipe set for every client)."
+  },
+  {
+   "id": "R4",
+   "code_list": "valve_type",
+   "attribute": "isolates",
+   "applies_to": [
+    "valves"
+   ],
+   "rule": "An isolates valve stops an isolation trace (gis_valves.is_gate_valve = 1)."
+  },
+  {
+   "id": "R5",
+   "code_list": "normal_position",
+   "attribute": "shut",
+   "applies_to": [
+    "valves"
+   ],
+   "rule": "A shut valve is a boundary in the network as delivered (closed); unknown and throttled count as open."
+  },
+  {
+   "id": "R6",
+   "code_list": "meter_function",
+   "attribute": "network",
+   "applies_to": [
+    "meters"
+   ],
+   "rule": "Every meter is loaded (customer meters too); only network meters are loaded into gis_meters (DMA inlets, bulk, reservoir, trunk, supply)."
+  },
+  {
+   "id": "R7",
+   "code_list": "area_type",
+   "attribute": "is_dma",
+   "applies_to": [
+    "dma_areas"
+   ],
+   "rule": "Only is_dma areas become DMA polygons in the apps; other districts are kept, not used as DMAs."
+  },
+  {
+   "id": "R8",
+   "code_list": "material",
+   "attribute": "band",
+   "applies_to": [
+    "pipes"
+   ],
+   "rule": "Discolouration risk band of the material (unknown = 3)."
+  },
+  {
+   "id": "R9",
+   "code_list": "hydrant_class",
+   "attribute": "supply_tier",
+   "applies_to": [
+    "hydrants"
+   ],
+   "rule": "Hydrant tier for tankering / injection / overland supply (1 = first choice, 2 = second, 0 = not used)."
+  },
+  {
+   "id": "R10",
+   "code_list": "units",
+   "attribute": "factor",
+   "applies_to": [
+    "pipes"
+   ],
+   "rule": "diameter x factor = mm (per row by diameter_units); coordinates are metres BNG."
+  },
+  {
+   "id": "R11",
+   "code_list": "*",
+   "attribute": "confirm",
+   "applies_to": [
+    "*"
+   ],
+   "rule": "A code whose confirm attribute is true is an uncertain class: the converter lists the field in the row's confirm; the apps apply the code's own attributes until staff confirm it."
+  }
+ ],
+ "kinds": {
+  "pipes": {
+   "geometry": "LineString",
+   "description": "Water pipes of every function and status: mains (distribution / trunk), raw and non-potable mains, service (communication / supply) pipes, abandoned / proposed pipes - status and pipe_function say which the apps analyse (rules R1-R3). from / to node refs are as delivered: their order may follow digitising or flow (the mapping's app_options.pipe_node_order says which); the apps take topology from the node refs, not from the vertex order.",
+   "unique": [
+    [
+     "pipe_ref"
+    ]
+   ],
+   "app_table": "gis_pipes",
+   "fields": [
+    {
+     "name": "pipe_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Pipe reference - the label the hydraulic model carries",
+     "app": "gis_pipes.pipe_ref"
+    },
+    {
+     "name": "pipe_function",
+     "type": "code",
+     "required": true,
+     "code_list": "pipe_function",
+     "description": "What the main does (rules R2 serves_customers, R3 potable_network)",
+     "app": "gis_pipes.pipe_type"
+    },
+    {
+     "name": "diameter",
+     "type": "number",
+     "required": true,
+     "description": "Nominal diameter as delivered, in diameter_units",
+     "app": "gis_pipes.diameter_value"
+    },
+    {
+     "name": "diameter_units",
+     "type": "code",
+     "required": true,
+     "code_list": "units",
+     "description": "Units of diameter, per row (units group 'diameter': mm or in)",
+     "app": "gis_pipes.diameter_units"
+    },
+    {
+     "name": "material",
+     "type": "code",
+     "required": true,
+     "code_list": "material",
+     "description": "WI material code (rule R8 material.band)",
+     "app": "gis_pipes.material"
+    },
+    {
+     "name": "from_node_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Start junction (node-id topology); blank = the app builds nodes from the pipe ends",
+     "ref_to": [
+      "nodes.node_ref",
+      "valves.node_ref",
+      "hydrants.node_ref",
+      "meters.node_ref",
+      "pumps.node_ref",
+      "sites.node_ref"
+     ],
+     "ref_check": "should_exist",
+     "app": "gis_pipes.from_node_id (app node id)"
+    },
+    {
+     "name": "to_node_ref",
+     "type": "ref",
+     "required": false,
+     "description": "End junction",
+     "ref_to": [
+      "nodes.node_ref",
+      "valves.node_ref",
+      "hydrants.node_ref",
+      "meters.node_ref",
+      "pumps.node_ref",
+      "sites.node_ref"
+     ],
+     "ref_check": "should_exist",
+     "app": "gis_pipes.to_node_id (app node id)"
+    },
+    {
+     "name": "length_m",
+     "type": "number",
+     "required": false,
+     "units": "m",
+     "description": "Measured length (blank = from the geometry)",
+     "app": "gis_pipes.length_m"
+    },
+    {
+     "name": "status",
+     "type": "code",
+     "required": false,
+     "code_list": "status",
+     "description": "Asset status (rule R1 status.in_network)",
+     "app": "gis_pipes.operational_status"
+    },
+    {
+     "name": "water_type",
+     "type": "code",
+     "required": false,
+     "code_list": "water_type",
+     "description": "Water type",
+     "app": "gis_pipes.water_type"
+    },
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": false,
+     "description": "DMA the pipe belongs to",
+     "ref_to": "dma_areas.dma_ref",
+     "ref_check": "should_exist",
+     "app": "gis_pipes.dma_ref"
+    },
+    {
+     "name": "dma_sub_ref",
+     "type": "ref",
+     "required": false,
+     "description": "DMA sub-area (pressure / control area inside the DMA)",
+     "ref_to": "dma_subs.dma_sub_ref",
+     "ref_check": "should_exist",
+     "app": "gis_pipes.dma_subzone_ref"
+    },
+    {
+     "name": "dma_sub_type",
+     "type": "text",
+     "required": false,
+     "description": "The delivery's own kind of the sub-area (e.g. its pressure-area / planning-area code), as delivered or a mapping constant",
+     "app": "gis_pipes.dma_subzone_type"
+    },
+    {
+     "name": "wqz_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Water quality / supply zone",
+     "ref_to": "supply_zones.wqz_ref",
+     "ref_check": "should_exist",
+     "app": "gis_pipes.wqz_ref"
+    },
+    {
+     "name": "control_group_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Control group / DMZ",
+     "ref_to": "control_groups.control_group_ref",
+     "ref_check": "should_exist",
+     "app": "gis_pipes.control_group"
+    },
+    {
+     "name": "sub_region_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Sub-region: an extra area level (operational split / team / county) - the delivery's own",
+     "ref_to": "sub_regions.sub_region_ref",
+     "ref_check": "should_exist",
+     "app": "gis_pipes.area_extra_1_ref (type sub_region)"
+    },
+    {
+     "name": "region_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Region / division",
+     "ref_to": "regions.region_ref",
+     "ref_check": "should_exist",
+     "app": "gis_pipes.region_ref"
+    },
+    {
+     "name": "model_area_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Hydraulic model area",
+     "ref_to": "model_areas.model_area_ref",
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "installed_date",
+     "type": "date",
+     "required": false,
+     "description": "Installation date",
+     "app": "gis_pipes.installed_date"
+    },
+    {
+     "name": "lining_current",
+     "type": "code",
+     "required": false,
+     "code_list": "lining",
+     "description": "Current lining",
+     "app": "gis_pipes.lining_current"
+    },
+    {
+     "name": "lining_factory",
+     "type": "code",
+     "required": false,
+     "code_list": "lining",
+     "description": "Factory lining",
+     "app": "gis_pipes.lining_factory"
+    },
+    {
+     "name": "lining_previous",
+     "type": "code",
+     "required": false,
+     "code_list": "lining",
+     "description": "Previous lining",
+     "app": "gis_pipes.lining_previous"
+    },
+    {
+     "name": "lining_date",
+     "type": "date",
+     "required": false,
+     "description": "Date of the current lining"
+    },
+    {
+     "name": "multipart",
+     "type": "bool",
+     "required": false,
+     "description": "'1' = the delivered line has parts that do not join; geometry kept as MultiLineString (blank = one LineString)"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ],
+   "geometry_accepts": [
+    "LineString",
+    "MultiLineString (multipart = '1' only)"
+   ]
+  },
+  "nodes": {
+   "geometry": "Point",
+   "description": "Network junctions and fittings that pipe from / to node refs name (node-id topology): fed from the delivery's fitting / joint / connection / junction / water-point layers, live or abandoned (status). A point asset that is its own network node (valve, hydrant, meter) carries its node ref in its own layer and may also appear here. Without nodes the app builds nodes from the pipe ends (coordinate topology).",
+   "unique": [
+    [
+     "node_ref"
+    ]
+   ],
+   "app_table": "gis_nodes",
+   "fields": [
+    {
+     "name": "node_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Junction reference",
+     "app": "gis_nodes (app node_id; ref kept for matching)"
+    },
+    {
+     "name": "elevation_m",
+     "type": "number",
+     "required": false,
+     "units": "m AOD",
+     "description": "Ground level",
+     "app": "gis_nodes.elevation_m"
+    },
+    {
+     "name": "node_type",
+     "type": "text",
+     "required": false,
+     "description": "The delivery's own kind of the node (fitting / end cap / tee / junction ...), as delivered or a mapping constant"
+    },
+    {
+     "name": "status",
+     "type": "code",
+     "required": false,
+     "code_list": "status",
+     "description": "Node status (rule R1 status.in_network; abandoned nodes kept, not in the network)"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "elevation_points": {
+   "geometry": "Point",
+   "description": "Ground-level points (spot heights) for pipe / asset elevation where nodes carry none: the apps join the nearest point (WDA pipe elevation). Optional; a delivery whose nodes carry elevation_m needs none.",
+   "unique": [],
+   "app_table": "wda gis_pipes.elevation (nearest point)",
+   "fields": [
+    {
+     "name": "point_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Point reference as delivered (not joined to anything)"
+    },
+    {
+     "name": "elevation_m",
+     "type": "number",
+     "required": true,
+     "units": "m AOD",
+     "description": "Ground level",
+     "app": "wda gis_pipes.elevation"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "valves": {
+   "geometry": "Point",
+   "description": "Valves of every type, incl. regulators (PRV / PSV / flow control), non-return, air valves and customer stop taps (valve_type).",
+   "unique": [
+    [
+     "valve_ref"
+    ]
+   ],
+   "app_table": "gis_valves",
+   "fields": [
+    {
+     "name": "valve_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Valve reference",
+     "app": "gis_valves.valve_ref"
+    },
+    {
+     "name": "valve_type",
+     "type": "code",
+     "required": true,
+     "code_list": "valve_type",
+     "description": "WI valve type (rule R4 valve_type.isolates)",
+     "app": "gis_valves.valve_type + is_gate_valve (R4)"
+    },
+    {
+     "name": "regulator_type",
+     "type": "text",
+     "required": false,
+     "description": "Regulator type as delivered (PRV / PSV / flow control ...; valve_type holds the WI code)",
+     "app": "gis_valves.regulator_type"
+    },
+    {
+     "name": "node_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Network node the asset sits on / is (when the delivery has node ids)",
+     "ref_to": [
+      "nodes.node_ref",
+      "pipes.from_node_ref",
+      "pipes.to_node_ref"
+     ],
+     "ref_check": "should_exist",
+     "app": "gis_valves.node_id (matched)"
+    },
+    {
+     "name": "normal_position",
+     "type": "code",
+     "required": false,
+     "code_list": "normal_position",
+     "description": "Normal position (rule R5 normal_position.shut)",
+     "app": "gis_valves.normal_position"
+    },
+    {
+     "name": "status",
+     "type": "code",
+     "required": false,
+     "code_list": "status",
+     "description": "Asset status (rule R1 status.in_network)",
+     "app": "gis_valves.operational_status"
+    },
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": false,
+     "description": "DMA the asset is in (DMA polygons decide when this is blank)",
+     "ref_to": "dma_areas.dma_ref",
+     "ref_check": "should_exist",
+     "app": "gis_valves.dma_ref"
+    },
+    {
+     "name": "elevation_m",
+     "type": "number",
+     "required": false,
+     "units": "m AOD",
+     "description": "Ground level",
+     "app": "gis_valves.elevation_m"
+    },
+    {
+     "name": "installed_date",
+     "type": "date",
+     "required": false,
+     "description": "Installation date"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "hydrants": {
+   "geometry": "Point",
+   "description": "Hydrants (fire and washout).",
+   "unique": [
+    [
+     "hydrant_ref"
+    ]
+   ],
+   "unique_check": "warn",
+   "app_table": "gis_hydrants",
+   "fields": [
+    {
+     "name": "hydrant_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Hydrant reference (the hydrant label in the model)",
+     "app": "gis_hydrants.hydrant_ref"
+    },
+    {
+     "name": "hydrant_type",
+     "type": "code",
+     "required": false,
+     "code_list": "hydrant_type",
+     "description": "Hydrant function (fire / washout ...)",
+     "app": "gis_hydrants.subtype_code"
+    },
+    {
+     "name": "hydrant_class",
+     "type": "code",
+     "required": false,
+     "code_list": "hydrant_class",
+     "description": "Bore / jumper class FB / FJ / LJ (rule R9 hydrant_class.supply_tier)",
+     "app": "gis_hydrants.jumper_type"
+    },
+    {
+     "name": "outlet_arrangement",
+     "type": "code",
+     "required": false,
+     "code_list": "outlet_arrangement",
+     "description": "Single / double outlet",
+     "app": "gis_hydrants.outlet_arrangement"
+    },
+    {
+     "name": "node_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Network node the asset sits on / is (when the delivery has node ids)",
+     "ref_to": [
+      "nodes.node_ref",
+      "pipes.from_node_ref",
+      "pipes.to_node_ref"
+     ],
+     "ref_check": "should_exist",
+     "app": "gis_hydrants.junction_id"
+    },
+    {
+     "name": "status",
+     "type": "code",
+     "required": false,
+     "code_list": "status",
+     "description": "Asset status (rule R1 status.in_network)",
+     "app": "gis_hydrants.operational_status"
+    },
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": false,
+     "description": "DMA the asset is in (DMA polygons decide when this is blank)",
+     "ref_to": "dma_areas.dma_ref",
+     "ref_check": "should_exist",
+     "app": "gis_hydrants.dma_ref"
+    },
+    {
+     "name": "control_group_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Control group / DMZ",
+     "ref_to": "control_groups.control_group_ref",
+     "ref_check": "should_exist",
+     "app": "gis_hydrants.raw_attrs"
+    },
+    {
+     "name": "elevation_m",
+     "type": "number",
+     "required": false,
+     "units": "m AOD",
+     "description": "Ground level",
+     "app": "gis_hydrants.elevation_m"
+    },
+    {
+     "name": "installed_date",
+     "type": "date",
+     "required": false,
+     "description": "Installation date",
+     "app": "gis_hydrants.installed_date"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "meters": {
+   "geometry": "Point",
+   "description": "Meters of every function - customer meters too (meter_function); the apps use network meters only (rule R6).",
+   "unique": [
+    [
+     "meter_ref"
+    ]
+   ],
+   "unique_check": "warn",
+   "app_table": "gis_meters",
+   "fields": [
+    {
+     "name": "meter_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Meter reference",
+     "app": "gis_meters.meter_ref"
+    },
+    {
+     "name": "meter_function",
+     "type": "code",
+     "required": true,
+     "code_list": "meter_function",
+     "description": "What the meter measures (rule R6 meter_function.network)",
+     "app": "gis_meters.meter_class"
+    },
+    {
+     "name": "node_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Network node the asset sits on / is (when the delivery has node ids)",
+     "ref_to": [
+      "nodes.node_ref",
+      "pipes.from_node_ref",
+      "pipes.to_node_ref"
+     ],
+     "ref_check": "should_exist",
+     "app": "gis_meters.source_junction_id"
+    },
+    {
+     "name": "pipe_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Pipe the meter is on",
+     "ref_to": "pipes.pipe_ref",
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "site_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Meter site (chamber) reference"
+    },
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": false,
+     "description": "DMA the meter feeds (to)",
+     "ref_to": "dma_areas.dma_ref",
+     "ref_check": "should_exist",
+     "app": "gis_meters.dma_ref"
+    },
+    {
+     "name": "dma_from_ref",
+     "type": "ref",
+     "required": false,
+     "description": "DMA / zone the meter takes from",
+     "ref_to": "dma_areas.dma_ref",
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "control_group_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Control group / DMZ",
+     "ref_to": "control_groups.control_group_ref",
+     "ref_check": "should_exist",
+     "app": "gis_meters.raw_attrs"
+    },
+    {
+     "name": "meter_type",
+     "type": "text",
+     "required": false,
+     "description": "Meter type as delivered (electromagnetic, mechanical ...)",
+     "app": "gis_meters.meter_type"
+    },
+    {
+     "name": "status",
+     "type": "code",
+     "required": false,
+     "code_list": "status",
+     "description": "Asset status (rule R1 status.in_network)",
+     "app": "gis_meters.operational_status"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "properties": {
+   "geometry": "Point",
+   "description": "Customer properties (supply points) with their address and business / property type in WI names. Never imported: people's names, phone numbers, e-mail addresses (the loader refuses mapping them). Sensitive customers (priority services / special needs / medical) only through the restricted placeholder sensitive_customer (special sign-in; never filled by the converter).",
+   "unique": [
+    [
+     "property_ref"
+    ]
+   ],
+   "app_table": "gis_properties",
+   "fields": [
+    {
+     "name": "property_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Property reference (e.g. UPRN or supply point id)",
+     "app": "gis_properties.property_no"
+    },
+    {
+     "name": "pipe_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Main the property is supplied from, when delivered (rule R2 decides a snap)",
+     "ref_to": "pipes.pipe_ref",
+     "ref_check": "should_exist",
+     "app": "gis_properties.source_pipe_ref"
+    },
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": false,
+     "description": "DMA",
+     "ref_to": "dma_areas.dma_ref",
+     "ref_check": "should_exist",
+     "app": "gis_properties.dma_ref"
+    },
+    {
+     "name": "customer_type",
+     "type": "code",
+     "required": false,
+     "code_list": "customer_type",
+     "description": "Household / non-household"
+    },
+    {
+     "name": "non_household_type",
+     "type": "code",
+     "required": false,
+     "code_list": "non_household_type",
+     "description": "Kind of non-household premises"
+    },
+    {
+     "name": "property_type",
+     "type": "text",
+     "required": false,
+     "description": "Property type / classification as delivered (e.g. an address-base class code or words)"
+    },
+    {
+     "name": "business_type",
+     "type": "text",
+     "required": false,
+     "description": "Business type as delivered (non_household_type holds the WI code)"
+    },
+    {
+     "name": "building_no",
+     "type": "text",
+     "required": false,
+     "description": "Building number",
+     "app": "gis_properties.addr_building_no"
+    },
+    {
+     "name": "sub_building",
+     "type": "text",
+     "required": false,
+     "description": "Flat / unit"
+    },
+    {
+     "name": "building_name",
+     "type": "text",
+     "required": false,
+     "description": "Building name",
+     "app": "gis_properties.building_name"
+    },
+    {
+     "name": "organisation",
+     "type": "text",
+     "required": false,
+     "description": "Organisation name (non-household only)",
+     "app": "gis_properties.organisation_name"
+    },
+    {
+     "name": "street",
+     "type": "text",
+     "required": false,
+     "description": "Street",
+     "app": "gis_properties.addr_street"
+    },
+    {
+     "name": "locality",
+     "type": "text",
+     "required": false,
+     "description": "Locality / sub-town",
+     "app": "gis_properties.addr_sub_town"
+    },
+    {
+     "name": "town",
+     "type": "text",
+     "required": false,
+     "description": "Town",
+     "app": "gis_properties.addr_town"
+    },
+    {
+     "name": "postcode",
+     "type": "text",
+     "required": false,
+     "description": "UK postcode",
+     "app": "gis_properties.postcode"
+    },
+    {
+     "name": "ground_level_m",
+     "type": "number",
+     "required": false,
+     "units": "m AOD",
+     "description": "Ground level at the property"
+    },
+    {
+     "name": "model_area_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Hydraulic model area (a delivery may scope properties by model area)",
+     "ref_to": "model_areas.model_area_ref",
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "sub_region_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Sub-region: an extra area level (operational split / team / county) - the delivery's own",
+     "ref_to": "sub_regions.sub_region_ref",
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "sensitive_customer",
+     "type": "bool",
+     "required": false,
+     "restricted": true,
+     "set_by": "restricted",
+     "description": "PLACEHOLDER - restricted: a sensitive customer (priority services / special needs / medical / sensitive premises). Needs a special sign-in in WI; no mapping may fill it, the converter never populates it (always blank)."
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "dma_areas": {
+   "geometry": "MultiPolygon",
+   "description": "DMA polygons and each DMA's place in the area hierarchy (every level refs its own layer). Only area_type codes with is_dma become DMAs in the apps (rule R7).",
+   "unique": [],
+   "unique_note": "dma_ref is NOT unique: a delivery may carry several polygons per DMA (the reader dissolves them)",
+   "app_table": "gis_dma_polygons + dma_hierarchy",
+   "fields": [
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": true,
+     "description": "DMA reference",
+     "app": "gis_dma_polygons.dma_ref"
+    },
+    {
+     "name": "area_type",
+     "type": "code",
+     "required": true,
+     "code_list": "area_type",
+     "description": "Kind of area (rule R7 area_type.is_dma)"
+    },
+    {
+     "name": "dma_name",
+     "type": "text",
+     "required": false,
+     "description": "DMA name"
+    },
+    {
+     "name": "control_group_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Control group / DMZ",
+     "ref_to": "control_groups.control_group_ref",
+     "ref_check": "should_exist",
+     "app": "gis_dma_polygons.control_zone / dma_hierarchy.control_zone"
+    },
+    {
+     "name": "wqz_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Water quality / supply zone",
+     "ref_to": "supply_zones.wqz_ref",
+     "ref_check": "should_exist",
+     "app": "gis_dma_polygons.raw_attrs"
+    },
+    {
+     "name": "sub_region_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Sub-region: an extra area level (operational split / team / county) - the delivery's own",
+     "ref_to": "sub_regions.sub_region_ref",
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "region_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Region / division",
+     "ref_to": "regions.region_ref",
+     "ref_check": "should_exist",
+     "app": "gis_dma_polygons.region / dma_hierarchy.region"
+    },
+    {
+     "name": "model_area_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Hydraulic model area",
+     "ref_to": "model_areas.model_area_ref",
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "customer_count",
+     "type": "int",
+     "required": false,
+     "description": "Customers in the DMA as the delivery states it (checked, never used as truth)",
+     "app": "gis_dma_polygons.raw_attrs"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "dma_subs": {
+   "geometry": null,
+   "description": "DMA sub-areas (pressure / control areas inside a DMA): an attribute table; pipes carry dma_sub_ref (no polygon).",
+   "unique": [
+    [
+     "dma_sub_ref"
+    ]
+   ],
+   "app_table": "gis_pipes.dma_subzone_ref / dma_subzone_type",
+   "fields": [
+    {
+     "name": "dma_sub_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Sub-area reference",
+     "app": "gis_pipes.dma_subzone_ref"
+    },
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": true,
+     "description": "DMA the sub-area is in",
+     "ref_to": "dma_areas.dma_ref",
+     "ref_check": "must_exist"
+    },
+    {
+     "name": "dma_sub_type",
+     "type": "text",
+     "required": false,
+     "description": "The delivery's own kind of the sub-area (as on pipes.dma_sub_type)",
+     "app": "gis_pipes.dma_subzone_type"
+    },
+    {
+     "name": "control_type",
+     "type": "code",
+     "required": false,
+     "code_list": "control_type",
+     "description": "What controls the sub-area",
+     "app": "gis_pipes.dma_subzone_type"
+    },
+    {
+     "name": "control_asset_refs",
+     "type": "list",
+     "required": false,
+     "description": "Valve / pump refs that control it (';' separated)"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "supply_zones": {
+   "geometry": "MultiPolygon",
+   "description": "Water quality / supply zones (each the exact union of its DMAs).",
+   "unique": [
+    [
+     "wqz_ref"
+    ]
+   ],
+   "app_table": "dma_info.zone (regional)",
+   "fields": [
+    {
+     "name": "wqz_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Zone reference",
+     "app": "gis_pipes.wqz_ref"
+    },
+    {
+     "name": "name",
+     "type": "text",
+     "required": false,
+     "description": "Zone name (supply site)"
+    },
+    {
+     "name": "source",
+     "type": "text",
+     "required": false,
+     "description": "Source(s) supplying the zone"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "control_groups": {
+   "geometry": "MultiPolygon",
+   "description": "Control groups / DMZs.",
+   "unique": [
+    [
+     "control_group_ref"
+    ]
+   ],
+   "app_table": "dma_hierarchy.control_zone",
+   "fields": [
+    {
+     "name": "control_group_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Control group reference",
+     "app": "gis_pipes.control_group"
+    },
+    {
+     "name": "name",
+     "type": "text",
+     "required": false,
+     "description": "Control group name"
+    },
+    {
+     "name": "region_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Region it is in",
+     "ref_to": "regions.region_ref",
+     "ref_check": "should_exist",
+     "app": "dma_hierarchy.region"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "sub_regions": {
+   "geometry": "MultiPolygon",
+   "description": "Sub-regions (groups of supply zones).",
+   "unique": [
+    [
+     "sub_region_ref"
+    ]
+   ],
+   "app_table": "- (open point: area_extra_1)",
+   "fields": [
+    {
+     "name": "sub_region_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Sub-region reference"
+    },
+    {
+     "name": "region_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Region it is in",
+     "ref_to": "regions.region_ref",
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "regions": {
+   "geometry": "MultiPolygon",
+   "description": "Regions / divisions.",
+   "unique": [
+    [
+     "region_ref"
+    ]
+   ],
+   "app_table": "dma_hierarchy.region",
+   "fields": [
+    {
+     "name": "region_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Region reference",
+     "app": "gis_pipes.region_ref"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "model_areas": {
+   "geometry": "MultiPolygon",
+   "description": "Hydraulic model areas: the GIS knows a model only through this layer.",
+   "unique": [
+    [
+     "model_area_ref"
+    ]
+   ],
+   "app_table": "- (model registry: MM / WDA)",
+   "fields": [
+    {
+     "name": "model_area_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Model area code"
+    },
+    {
+     "name": "model_name",
+     "type": "text",
+     "required": false,
+     "description": "Model name"
+    },
+    {
+     "name": "model_no",
+     "type": "int",
+     "required": false,
+     "description": "Model number"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "pumps": {
+   "geometry": "Point",
+   "description": "Pumps / pumping stations.",
+   "unique": [
+    [
+     "pump_ref"
+    ]
+   ],
+   "app_table": "-",
+   "fields": [
+    {
+     "name": "pump_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Pump reference"
+    },
+    {
+     "name": "node_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Pump junction",
+     "ref_to": [
+      "nodes.node_ref",
+      "pipes.from_node_ref",
+      "pipes.to_node_ref"
+     ],
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "status",
+     "type": "code",
+     "required": false,
+     "code_list": "status",
+     "description": "Asset status (rule R1 status.in_network)"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "sites": {
+   "geometry": "Point",
+   "description": "Network sites and structures: reservoirs, towers, tanks, treatment works, boreholes, pumping stations.",
+   "unique": [
+    [
+     "site_ref"
+    ]
+   ],
+   "app_table": "-",
+   "fields": [
+    {
+     "name": "site_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Site reference"
+    },
+    {
+     "name": "site_type",
+     "type": "code",
+     "required": true,
+     "code_list": "site_type",
+     "description": "Kind of site"
+    },
+    {
+     "name": "node_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Site junction",
+     "ref_to": [
+      "nodes.node_ref",
+      "pipes.from_node_ref",
+      "pipes.to_node_ref"
+     ],
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "status",
+     "type": "code",
+     "required": false,
+     "code_list": "status",
+     "description": "Asset status (rule R1 status.in_network)"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "assets": {
+   "geometry": "Point",
+   "description": "Other clean-water point assets with no layer of their own (access points, chambers, monitoring / sampling points, inlets, anodes, boundary boxes ...): asset_type = the WI kind, extra = the rest.",
+   "unique": [
+    [
+     "asset_ref"
+    ]
+   ],
+   "unique_check": "warn",
+   "app_table": "- (all apps: by asset_type)",
+   "fields": [
+    {
+     "name": "asset_ref",
+     "type": "ref",
+     "required": true,
+     "description": "Asset reference"
+    },
+    {
+     "name": "asset_type",
+     "type": "code",
+     "required": true,
+     "code_list": "asset_type",
+     "description": "WI asset type"
+    },
+    {
+     "name": "asset_type_delivered",
+     "type": "text",
+     "required": false,
+     "description": "The delivery's own kind of the asset, as delivered or a mapping constant"
+    },
+    {
+     "name": "status",
+     "type": "code",
+     "required": false,
+     "code_list": "status",
+     "description": "Asset status (rule R1 status.in_network)"
+    },
+    {
+     "name": "node_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Network node the asset sits on",
+     "ref_to": [
+      "nodes.node_ref",
+      "pipes.from_node_ref",
+      "pipes.to_node_ref"
+     ],
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "pipe_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Pipe the asset is on",
+     "ref_to": "pipes.pipe_ref",
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "dma_ref",
+     "type": "ref",
+     "required": false,
+     "description": "DMA the asset is in",
+     "ref_to": "dma_areas.dma_ref",
+     "ref_check": "should_exist"
+    },
+    {
+     "name": "elevation_m",
+     "type": "number",
+     "required": false,
+     "units": "m AOD",
+     "description": "Ground level"
+    },
+    {
+     "name": "installed_date",
+     "type": "date",
+     "required": false,
+     "description": "Installation date"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  }
+ },
+ "row_flags": [
+  "extra: the mapping names the source columns for the bag (extra: [columns]) or takes every delivered column not mapped into a WI field (extra: \"*rest\"). Never in the bag: personal columns (people's names, phone numbers, e-mail addresses, user / editor ids), sensitive-customer columns (priority services, special needs, medical, vulnerable - see properties.sensitive_customer) and geometry-derived system columns (shape length / area); the converter records the columns it left out. The strict loader refuses a mapping that names a personal or sensitive column anywhere.",
+  "confirm: a field is listed when its class is uncertain - the code's `confirm` attribute is true (e.g. pipe_function unknown: serves_customers false, 'probably not, but confirm'), the delivered value had no mapping (the codes fallback, counted) or the mapping lists the delivered value in codes.confirm. The row keeps its own ref, so staff confirm it against the client key outside AI (pick / key tool) or a new WI value is added the normal way.",
+  "restricted: a field marked restricted (properties.sensitive_customer) is a placeholder for data that needs a special sign-in; no mapping may fill it and the converter never populates it.",
+  "Code-list labels are the reporting lookups: every code list's `label` is the display / report name of its codes (WI names), the same for every client."
+ ]
+}

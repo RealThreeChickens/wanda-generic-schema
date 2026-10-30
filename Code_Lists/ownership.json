@@ -1,0 +1,35 @@
+{
+ "code_list": "ownership",
+ "version": "1.0.0",
+ "description": "Who owns the pipe (company side or customer side). Blank = the delivery did not say.",
+ "codes": [
+  {
+   "code": "company",
+   "label": "Company owned",
+   "synonyms": [
+    "company",
+    "company owned",
+    "water company",
+    "public"
+   ]
+  },
+  {
+   "code": "private",
+   "label": "Privately owned (customer side)",
+   "synonyms": [
+    "private",
+    "privately owned",
+    "customer owned",
+    "customer"
+   ]
+  },
+  {
+   "code": "unknown",
+   "label": "Unknown",
+   "synonyms": [
+    "unknown",
+    "not known"
+   ]
+  }
+ ]
+}

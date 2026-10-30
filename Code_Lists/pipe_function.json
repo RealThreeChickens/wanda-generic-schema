@@ -1,7 +1,7 @@
 {
  "code_list": "pipe_function",
- "version": "1.2.0",
- "description": "WI pipe function. serves_customers: properties may be linked to it (rule R2). potable_network: part of the potable network the apps analyse (rule R3). confirm: an uncertain class - rows are flagged for confirmation (rule R11).",
+ "version": "1.3.0",
+ "description": "WI pipe function. serves_customers: properties may be linked to it (rule R2). potable_network: part of the potable network the apps analyse (rule R3). confirm: an uncertain class - rows are flagged for confirmation (rule R11). serves_customers null (trunk): not fixed by the code list - the module decides (rule R2).",
  "attributes": {
   "serves_customers": "properties may be linked to this pipe",
   "potable_network": "part of the potable network the apps analyse",
@@ -27,8 +27,9 @@
     "transmission",
     "transmission main"
    ],
-   "serves_customers": false,
-   "potable_network": true
+   "serves_customers": null,
+   "potable_network": true,
+   "serves_customers_note": "not fixed by the code list - client property links kept as delivered; serves-customers is module logic"
   },
   {
    "code": "raw",

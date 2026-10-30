@@ -1,14 +1,14 @@
 {
  "code_list": "meter_function",
- "version": "1.1.0",
- "description": "WI meter function. network: a network (district / zone / bulk) meter the apps use (rule R6).",
+ "version": "1.2.0",
+ "description": "WI meter function. network: a network (district / zone / bulk / source / reservoir / pump) meter the apps use (rule R6). process meters (run-to-waste, backwash, process water, raw-water abstraction) are not on the supply network. \"Waste meter\" is deliberately NOT a synonym of any code: its UK meaning varies (a district leakage meter or a waste-water meter), so a delivery maps it through its own codes.confirm decision.",
  "attributes": {
   "network": "network meter used by the apps"
  },
  "codes": [
   {
    "code": "district",
-   "label": "District (DMA) meter",
+   "label": "District (DMA) meter - in / out by dma_ref / dma_from_ref",
    "synonyms": [
     "district",
     "district meter",
@@ -28,7 +28,7 @@
   },
   {
    "code": "reservoir",
-   "label": "Reservoir meter",
+   "label": "Reservoir meter (direction not stated)",
    "synonyms": [
     "reservoir",
     "reservoir meter"
@@ -53,6 +53,64 @@
     "supply meter"
    ],
    "network": true
+  },
+  {
+   "code": "source",
+   "label": "Source / works outlet meter (distribution input)",
+   "synonyms": [
+    "source",
+    "source meter",
+    "source supply",
+    "works outlet",
+    "distribution input meter"
+   ],
+   "network": true
+  },
+  {
+   "code": "reservoir_inlet",
+   "label": "Reservoir / tower inlet meter",
+   "synonyms": [
+    "reservoir inlet",
+    "res inlet",
+    "reservoir inflow",
+    "tower inlet"
+   ],
+   "network": true
+  },
+  {
+   "code": "reservoir_outlet",
+   "label": "Reservoir / tower outlet meter",
+   "synonyms": [
+    "reservoir outlet",
+    "res outlet",
+    "reservoir outflow",
+    "tower outlet"
+   ],
+   "network": true
+  },
+  {
+   "code": "pump",
+   "label": "Pumping station meter",
+   "synonyms": [
+    "pump",
+    "pump meter",
+    "pumping station meter",
+    "booster meter",
+    "pump delivery"
+   ],
+   "network": true
+  },
+  {
+   "code": "process",
+   "label": "Works / process meter, not on the supply network (run-to-waste, backwash, process water, raw-water abstraction)",
+   "synonyms": [
+    "process",
+    "process meter",
+    "run to waste",
+    "backwash",
+    "abstraction"
+   ],
+   "network": false
   },
   {
    "code": "customer",
