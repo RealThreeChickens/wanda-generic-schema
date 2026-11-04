@@ -1,7 +1,7 @@
 {
  "schema": "wanda_network_v1",
- "version": "1.3.0",
- "status": "v1.3.0 SIGNED 29/10/2026 std-2026.10.29 (, additive: derivation provenance *_source fields, node / pipe / area links, meter size and function as delivered, monitoring_points layer, pipe ownership, restricted organisation, attribute tables meter_loggers and prv_settings) awaiting sign-off; v1.2.1 frozen in _frozen/network_1.2.1. v1.2.1 (16/10: text only - valid polygons, container.polygons) signed std-2026.10.16 (v1.2.0 frozen in _frozen/network_1.2.0); v1.2.0 signed std-2026.10.14 (v1.1.0 frozen in ..\\_frozen\\v1.1.0; 1.2 = James's standing rules 13/10: one import, all apps; accept all GIS; personal data never imported; uncertain classes flagged)",
+ "version": "1.4.0",
+ "status": "v1.4.0 APPROVED 04/11/2026 (James; STANDARD-1.4.0, WRZ-SHAPE, PIPE-TIERS, CAT-Q16; std-2026.11.04), additive: dma_areas.wrz_ref + the water_resource_zones layer; the three pipe tiers come from pipe_function 1.4.0 (transmission added); v1.3.0 frozen in _frozen/network_1.3.0. v1.3.0 SIGNED 29/10/2026 std-2026.10.29 (, additive: derivation provenance *_source fields, node / pipe / area links, meter size and function as delivered, monitoring_points layer, pipe ownership, restricted organisation, attribute tables meter_loggers and prv_settings) awaiting sign-off; v1.2.1 frozen in _frozen/network_1.2.1. v1.2.1 (16/10: text only - valid polygons, container.polygons) signed std-2026.10.16 (v1.2.0 frozen in _frozen/network_1.2.0); v1.2.0 signed std-2026.10.14 (v1.1.0 frozen in ..\\_frozen\\v1.1.0; 1.2 = James's standing rules 13/10: one import, all apps; accept all GIS; personal data never imported; uncertain classes flagged)",
  "description": "WANDa network GIS. One GeoPackage, one layer per kind (layer name = kind name), EPSG:27700, coordinates in metres. Layers are aligned to the PLDR project tables (app_table / app). The converter changes only layer names, field names and the delivery's own codes; values (coordinates, diameters, lengths, dates, refs) are as delivered. App behaviour comes from ONE rule per code attribute (rules), never from per-client tables. ONE IMPORT, ALL APPS (v1.2): every clean-water layer and field of a delivery comes in - assets of every status and function (abandoned / proposed kept with status, raw / non-potable and service pipes with pipe_function, customer meters with meter_function, other point assets in `assets`) and every source field with no WI field in the row's `extra` bag; the apps take what they need by the rules. Waste-water layers stay out. v1.3: where the delivery left a node ref, pipe ref or area ref blank the import fills it once and records the origin in the *_source field (value_source); the apps never re-derive.",
  "container": {
   "format": "gpkg",
@@ -37,7 +37,7 @@
   "Every *_ref field is text exactly as delivered: trimmed, case kept, leading zeros kept, a float id 12345.0 written 12345.",
   "ref_to names the layer.field a ref points at (a list = any of them; a node ref may name a junction, a pipe end or a point asset that is its own network node, e.g. a valve); ref_check must_exist = an error when the target layer is delivered and the value is missing from it; should_exist = counted and reported (e.g. a node ref to a site / pump junction).",
   "unique lists each layer's key (never blank, except the optional key parts of meter_loggers (channel) and prv_settings (valid_from), which are compared as blank); unique_check warn = duplicates reported, the reader keeps the first (hydrants, meters); a layer with no unique list (dma_areas) may repeat its ref.",
-  "Area refs on assets (dma_ref, wqz_ref ...) are the delivery's own; the import fills blank area refs once (dma_ref_source); the apps may also assign by polygon (dma_areas).",
+  "Area refs on assets (dma_ref, wqz_ref, wrz_ref ...) are the delivery's own; the import fills blank area refs once (dma_ref_source); the apps may also assign by polygon (dma_areas).",
   "A list field holds refs separated by ';' with no spaces.",
   "Node refs: where the delivery left a pipe end or point asset without a usable node ref the import fills it once from the geometry (ends and points within 1 cm share a ref; *_node_source says gis / derived_coincident / derived_own). A derived ref has the form c:<x>_<y> (metres, 3 decimal places, the cluster's lowest end point). No node rows are added; the apps never re-derive.",
   "Meter role (no field, no guessing): for DMA X, a network meter with dma_ref = X is an inlet and one with dma_from_ref = X an export; where dma_from_ref is not delivered the export role is unknown (engineer to say).",
@@ -68,7 +68,7 @@
     "pipes",
     "properties"
    ],
-   "rule": "A property snaps only to a serves_customers pipe; a delivered properties.pipe_ref is kept as given. pipe_function unknown: serves_customers false and confirm (James 13/10 'probably not, but confirm'). serves_customers null (trunk) = the module decides; the code list does not fix it and client property links are kept as delivered."
+   "rule": "A property snaps only to a serves_customers pipe; a delivered properties.pipe_ref is kept as given. pipe_function unknown: serves_customers false and confirm (James 13/10 'probably not, but confirm'). serves_customers null (transmission, trunk) = the module decides; the code list does not fix it and client property links are kept as delivered."
   },
   {
    "id": "R3",
@@ -157,7 +157,7 @@
  "kinds": {
   "pipes": {
    "geometry": "LineString",
-   "description": "Water pipes of every function and status: mains (distribution / trunk), raw and non-potable mains, service (communication / supply) pipes, abandoned / proposed pipes - status and pipe_function say which the apps analyse (rules R1-R3). from / to node refs are as delivered: their order may follow digitising or flow (the mapping's app_options.pipe_node_order says which); the apps take topology from the node refs, not from the vertex order. v1.3: blank node refs are filled by the import (derived refs c:<x>_<y>, see ref_rules); the apps take topology from the refs as filed.",
+   "description": "Water pipes of every function and status: mains (distribution / trunk / transmission), raw and non-potable mains, service (communication / supply) pipes, abandoned / proposed pipes - status and pipe_function say which the apps analyse (rules R1-R3). from / to node refs are as delivered: their order may follow digitising or flow (the mapping's app_options.pipe_node_order says which); the apps take topology from the node refs, not from the vertex order. v1.3: blank node refs are filled by the import (derived refs c:<x>_<y>, see ref_rules); the apps take topology from the refs as filed.",
    "unique": [
     [
      "pipe_ref"
@@ -1283,6 +1283,15 @@
      "app": "gis_dma_polygons.raw_attrs"
     },
     {
+     "name": "wrz_ref",
+     "type": "ref",
+     "required": false,
+     "description": "Water Resource Zone (WRMP planning unit) the DMA is in: one WRZ per DMA",
+     "ref_to": "water_resource_zones.wrz_ref",
+     "ref_check": "should_exist",
+     "app": "gis_dma_polygons.raw_attrs"
+    },
+    {
      "name": "sub_region_ref",
      "type": "ref",
      "required": false,
@@ -1394,7 +1403,7 @@
   },
   "supply_zones": {
    "geometry": "MultiPolygon",
-   "description": "Water quality / supply zones (each the exact union of its DMAs).",
+   "description": "Water quality / supply zones (WQZ; each the exact union of its DMAs): the zone drinking water regulations are reported for - no more than 100,000 people and of roughly uniform water quality. A label only; it never drives hydraulics. Not the same as a Water Resource Zone (water_resource_zones).",
    "unique": [
     [
      "wqz_ref"
@@ -1420,6 +1429,44 @@
      "type": "text",
      "required": false,
      "description": "Source(s) supplying the zone"
+    },
+    {
+     "name": "confirm",
+     "type": "list",
+     "required": false,
+     "set_by": "converter",
+     "description": "WI fields of this row whose classification needs confirming (';' list; rule R11) - set by the converter, never mapped"
+    },
+    {
+     "name": "extra",
+     "type": "json",
+     "required": false,
+     "set_by": "converter",
+     "description": "Source fields with no WI field (JSON object keyed by the delivered column name; blank = none) - set by the converter from the mapping's extra, never mapped"
+    }
+   ]
+  },
+  "water_resource_zones": {
+   "geometry": "MultiPolygon",
+   "description": "Water Resource Zones (WRZ): the Environment Agency water resources planning unit (WRMP) - the largest area within which water resources, including abstraction and the treated supply, are shared with customers at the same level of supply risk. Each WRZ is the exact union of its DMAs (whole DMAs joined: no gaps, no overlaps); a DMA is in exactly one WRZ (dma_areas.wrz_ref; several polygons of one DMA repeat the same wrz_ref). A WRZ is a label for a section of the network, normally tied to a source of water; it never drives hydraulics - traces come from the models whatever polygon or WRZ an asset is assigned to. Not the same as a supply zone (supply_zones, WQZ).",
+   "unique": [
+    [
+     "wrz_ref"
+    ]
+   ],
+   "app_table": "- (area level; the apps carry it, no module reads it yet)",
+   "fields": [
+    {
+     "name": "wrz_ref",
+     "type": "ref",
+     "required": true,
+     "description": "WRZ reference"
+    },
+    {
+     "name": "name",
+     "type": "text",
+     "required": false,
+     "description": "WRZ name"
     },
     {
      "name": "confirm",
