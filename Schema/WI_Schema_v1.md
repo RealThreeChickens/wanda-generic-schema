@@ -7,7 +7,7 @@ Machine-readable files are the source; this page only explains them.
 | File | What |
 |---|---|
 | `Schema/wanda_performance_v1.json` | Performance data kinds `contacts`, `network_events`, `wq_samples`, `flush_records` (v1.0.0) |
-| `Schema/wanda_network_v1.json` | Network GIS, 18 layers + 2 attribute tables (v1.3.0, below; change log at the end) + ref rules + row flags + the WI app rules R1-R11 |
+| `Schema/wanda_network_v1.json` | Network GIS, 19 layers + 2 attribute tables (v1.4.0, below; change log at the end) + ref rules + row flags + the WI app rules R1-R11 |
 | `Code_Lists/*.json` | 29 code lists (network: `asset_type`, `material`, `status`, `pipe_function`, `water_type`, `units`, `lining`, `valve_type`, `normal_position`, `hydrant_type`, `hydrant_class`, `outlet_arrangement`, `meter_function`, `area_type`, `control_type`, `customer_type`, `non_household_type`, `site_type`, `value_source`, `ownership`, `monitoring_role`, `prv_control_mode`; telemetry (lists only, the telemetry schema follows): `telemetry_system`, `measure`, `measure_units`, `reading_quality`; performance: `contact_category`, `event_type`, `determinand`) |
 
 Each field: `name`, `type`, `required`, optional `code_list`, `units`, `ref_to` + `ref_check`, `app` (the PLDR project
@@ -36,7 +36,7 @@ Rules kept from the template:
   code list factor), or lat/lon WGS84.
 - Area levels (`dmz`, `manager_area`, `region`, `zone`) as delivered.
 
-## Network GIS (`wanda_network_v1` v1.3.0)
+## Network GIS (`wanda_network_v1` v1.4.0)
 
 One GeoPackage `wanda_network.gpkg`, EPSG:27700, metres; layer name = kind name; `dma_subs`, `meter_loggers` and `prv_settings` are attribute tables (no
 geometry); polygon layers are MultiPolygon (Polygon rows accepted). Plus `wanda_delivery.json` (schema version,
@@ -54,9 +54,10 @@ by per-client tables.
 | `hydrants` | Point | gis_hydrants | hydrant_ref | hydrant_type, hydrant_class, outlet_arrangement, node_ref, status, dma_ref, control_group_ref, elevation_m, installed_date, pipe_ref, node_ref_source, pipe_ref_source, dma_ref_source, dma_boundary_refs |
 | `meters` | Point | gis_meters | meter_ref, meter_function | node_ref, pipe_ref, site_ref, dma_ref, dma_from_ref, control_group_ref, meter_type, status, diameter, diameter_units, meter_function_delivered, node_ref_source, pipe_ref_source, dma_ref_source, dma_boundary_refs |
 | `properties` | Point | gis_properties | property_ref | pipe_ref, dma_ref, customer_type, non_household_type, building_no, sub_building, building_name, street, locality, town, postcode, ground_level_m, model_area_ref, dma_ref_source; `organisation` is a restricted placeholder, never filled (v1.3) |
-| `dma_areas` | Polygon | gis_dma_polygons + dma_hierarchy | dma_ref, area_type | dma_name, control_group_ref, wqz_ref, sub_region_ref, region_ref, model_area_ref, customer_count |
+| `dma_areas` | Polygon | gis_dma_polygons + dma_hierarchy | dma_ref, area_type | dma_name, control_group_ref, wqz_ref, wrz_ref, sub_region_ref, region_ref, model_area_ref, customer_count |
 | `dma_subs` | - | gis_pipes.dma_subzone_ref / _type | dma_sub_ref, dma_ref | dma_sub_type, control_type, control_asset_refs |
 | `supply_zones` | Polygon | dma_info.zone | wqz_ref | name, source |
+| `water_resource_zones` | Polygon | - (area level; carried, no module reads it yet) | wrz_ref | name |
 | `control_groups` | Polygon | dma_hierarchy.control_zone | control_group_ref | name, region_ref |
 | `sub_regions` | Polygon | (open point 2) | sub_region_ref | region_ref |
 | `regions` | Polygon | dma_hierarchy.region | region_ref | - |
@@ -144,7 +145,7 @@ WI app rules (one per code attribute, `rules` block):
 | Rule | Code list . attribute | App behaviour |
 |---|---|---|
 | R1 | status.in_network | every asset kept; only in_network assets build the analysed network (blank = unknown = in) |
-| R2 | pipe_function.serves_customers | a property snaps only to such a pipe; a delivered pipe_ref is kept; null (trunk) = the module decides |
+| R2 | pipe_function.serves_customers | a property snaps only to such a pipe; a delivered pipe_ref is kept; null (transmission, trunk) = the module decides |
 | R3 | pipe_function.potable_network | raw / non-potable mains kept, not analysed |
 | R4 | valve_type.isolates (+ list-level blank_isolates) | stops an isolation trace (is_gate_valve); isolation valves only - sluice, butterfly, boundary, district, motorised. A BLANK valve_type isolates (`blank_isolates: true`); `other` does not (valve_type 1.3.2, James 14/10) |
 | R5 | normal_position.shut | closed = boundary as delivered; throttled / unknown = open |
@@ -236,6 +237,8 @@ Code lists `health_outcome` (only engineer_review proposed by the tool) and `mod
 | network 1.2.1 | 16/10/2026 | text only: every filed area polygon valid; converter repairs invalid polygons (make_valid structure) and records geometry_repaired; validator refuses an unrepaired one (NW-INVALID); no field / layer / code change, 1.2.0 sets still read | James 16/10 |
 | network 1.3.0 | 29/10/2026 | SIGNED (std-2026.10.29), additive: `*_source` provenance fields (value_source) on pipes, valves, hydrants, meters, assets, pumps, sites, properties; pipes ownership; valves + hydrants pipe_ref; `dma_boundary_refs`; meters diameter, diameter_units, meter_function_delivered; new point layer monitoring_points (monitoring_role; non-meter logger / monitoring locations); new attribute tables meter_loggers and prv_settings | import rework: derived values recorded, meter size / function, monitoring points, PRV settings |
 | network 1.3.0 | 29/10/2026 | `properties.organisation` marked restricted (never filled); text: node and area refs filled once by the import (ref_rules), meter inlet / export rule, R2 null = module decides, R6 / R10 wording | names never imported; one place for the derivation rules |
+| network 1.4.0 | 04/11/2026 | APPROVED by James 04/11 (`..\Signoff\std-2026.11.04.md`), additive: `dma_areas.wrz_ref`; new polygon layer `water_resource_zones` (wrz_ref, name; each WRZ the exact union of whole DMAs, a DMA in one WRZ); definitions of WRZ and WQZ in the kind descriptions; 1.3.0 frozen in `..\_frozen\network_1.3.0\` | CAT-Q16, WRZ-SHAPE, STANDARD-1.4.0, WI-FULL-REBUILD |
+| pipe_function 1.4.0 | 04/11/2026 | New code `transmission` (grid-type mains; serves_customers null like trunk); `trunk` label "Trunk main" and the synonyms transmission / transmission main move to the new code. Three tiers by role, never by diameter. 1.3.0 frozen in `..\_frozen\pipe_function_1.3.0\` | PIPE-TIERS |
 | meter_function 1.2.0 | 29/10/2026 | New codes source, reservoir_inlet, reservoir_outlet, pump (network) and process (not network); labels of reservoir and district clarified; "waste meter" deliberately not a synonym | source / reservoir / pump meters were not distinguishable; UK meaning of waste meter varies |
 | pipe_function 1.3.0 | 29/10/2026 | trunk: serves_customers null (module decides) with a note; nothing else changes | property links on trunk mains are kept as delivered |
 | value_source, ownership, monitoring_role, prv_control_mode 1.0.0 | 29/10/2026 | New code lists | fields above |
@@ -243,6 +246,6 @@ Code lists `health_outcome` (only engineer_review proposed by the tool) and `mod
 
 All v1.2.0 changes are additive for a reader of the WI set (new optional fields at the end of each layer, a new layer,
 new codes) except pipe_function.unknown serves_customers (true -> false). All v1.1.0 changes are additive (new optional fields, a new optional layer, new codes) or label / attribute
-corrections; a v1.0.0 set still reads. Network 1.2.1 is text only: a 1.2.0 set still reads. Network 1.3.0 is additive: a 1.2.x set still reads (new fields blank); consumers must accept the new meter codes and a null trunk serves_customers before a 1.3.0 set is filed. Sign-offs: `..\Signoff\`.
+corrections; a v1.0.0 set still reads. Network 1.2.1 is text only: a 1.2.0 set still reads. Network 1.3.0 is additive: a 1.2.x set still reads (new fields blank); consumers must accept the new meter codes and a null trunk serves_customers before a 1.3.0 set is filed. Network 1.4.0 is additive: a 1.3.0 set still reads (wrz_ref and the WRZ layer blank / not delivered; a filed `trunk` stays `trunk`); consumers must accept the new layer and the `transmission` pipe code, and treat `transmission` as a main wherever `trunk` is, before a 1.4.0 set is filed. WRZ = the EA water resources planning unit; supply zone (WQZ) = the drinking water regulations zone (no more than 100,000 people, roughly uniform quality); both are labels and never drive hydraulics. Sign-offs: `..\Signoff\`.
 
 - material code list 1.2.1 (13/10/2026): bands aligned with the decided WRc banding - AK 3 -> 1 (black alkathene, PE family), FRC 3 -> 2 (like AC; James 13/10).
